@@ -1,0 +1,5 @@
+secrets.yaml
+secret.yml
+*-secret.yaml
+*-secret.yml
+secret-*.yml

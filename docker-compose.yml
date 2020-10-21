@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:9.6
+    container_name: user-api-db
+    hostname: db
+    environment:
+      POSTGRES_PASSWORD: user-pass
+      POSTGRES_USER: user
+      POSTGRES_DB: users
+    ports:
+      - 5434:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  h2:
+    image: oscarfonts/h2
+    container_name: user-api-db-h2
+    hostname: h2
+    environment:
+      - H2_OPTIONS=-ifNotExists
+    ports:
+      - 1521:1521
+      - 81:81
+    volumes:
+      - h2db:/opt/h2-data
+
+  adminer:
+    image: adminer
+    container_name: user-api-adminer
+    ports:
+      - 8081:8080
+
+volumes:
+  db:
+  h2db:

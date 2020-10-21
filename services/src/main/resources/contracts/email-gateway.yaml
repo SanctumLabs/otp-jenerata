@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  description: "Used to send out emails"
+  version: 1.0.0
+  title: Email Gateway
+tags:
+  - name: mail
+    description: Send out emails
+paths:
+  /api/v1/mail/:
+    post:
+      tags:
+        - mail
+      summary: Send out an email
+      description: "Send out emails"
+      operationId: sendMail
+      requestBody:
+        $ref: "#/components/schemas/Email"
+      responses:
+        "422":
+          description: Invalid input
+          $ref: "#/components/schemas/FailedResponse"
+
+        "200":
+          description: Message has been sent out
+          $ref: "#/components/schemas/SuccessResponse"
+
+components:
+  schemas:
+
+    From:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          example: johndoe@example.com
+        name:
+          type: string
+          example: John Doe
+
+    Attachment:
+      type: object
+      required:
+        - content
+        - filename
+      properties:
+        content:
+          type: string
+        filename:
+          type: string
+
+    Email:
+      type: object
+      description: Email Object
+      required:
+        - to
+        - subject
+        - message
+      properties:
+        from_:
+          $ref: "#/components/schemas/From"
+
+        to:
+          type: array
+          items:
+            type: string
+            example: janedoe@example.com
+
+        cc:
+          type: array
+          items:
+            type: string
+            example: janedoe@example.com
+
+        bcc:
+          type: array
+          items:
+            type: string
+            example: janedoe@example.com
+
+        subject:
+          type: string
+          example: Rocket Fuel
+
+        message:
+          type: string
+          example: We are ready for take off Captain!
+
+        attachments:
+          type: array
+          description: Attachments to send
+          items:
+            $ref: "#/components/schemas/Attachment"
+
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Email sent out successfully"
+
+    FailedResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          description: "Array of error messages"
+          items:
+            type: object
+            properties:
+              errors:
+                type: object

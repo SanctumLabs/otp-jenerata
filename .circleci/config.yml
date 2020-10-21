@@ -1,0 +1,311 @@
+version: 2.1
+executors:
+  jdk-executor:
+    docker:
+      - image: circleci/openjdk:14-jdk-buster
+    working_directory: ~/user-service
+
+  docker-executor:
+    docker:
+      - image: docker:17.05.0-ce-git
+    environment:
+      MAVEN_OPTS: -Xmx3200m
+    working_directory: ~/user-service
+
+  node-executor:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/user-service
+
+jobs:
+  dependencies:
+    executor: jdk-executor
+    steps:
+      - checkout
+      - restore_cache:
+          key: UserApi-{{ checksum "build.gradle.kts" }}-{{ .Branch }}
+          keys:
+            - UA-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Download dependencies
+          command: ./gradlew dependencies
+
+      - save_cache:
+          key: UserApi-{{ checksum "build.gradle.kts" }}-{{ .Branch }}
+          paths: ~/.gradle
+          keys:
+            - UA-{{ checksum "build.gradle.kts" }}
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  test:
+    executor: jdk-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          key: UserApi-{{ checksum "build.gradle.kts" }}-{{ .Branch }}
+          keys:
+            - UA-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Run linting (Check Kotlin code style)
+          command: ./gradlew detekt
+
+      - run:
+          name: Run unit tests
+          command: ./gradlew test
+
+      - run:
+          name: Run test coverage
+          command: ./gradlew jacocoTestReport
+
+      - run:
+          name: Save test metadata
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*build/test-results/*.xml" -exec cp {} ~/junit/ \;
+          when: always
+
+      - store_test_results:
+          path: ./build/test-results/
+
+      - store_test_results:
+          path: ~/junit
+
+      - store_artifacts:
+          path: ./reports/tests/
+          destination: test-results
+
+      - store_artifacts:
+          path: ./reports/coverage/
+          destination: coverage
+
+      - store_artifacts:
+          path: ~/junit
+
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  build:
+    executor: jdk-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          key: UserApi-{{ checksum "build.gradle.kts" }}-{{ .Branch }}
+          keys:
+            - UA-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Build application
+          command: ./gradlew app:bootJar
+
+      - run:
+          name: Build migrations application
+          command: ./gradlew migrations:bootJar
+
+      - run:
+          name: Build batchjobs application
+          command: ./gradlew batchjobs:bootJar
+
+      - run:
+          name: Copy build artifacts
+          command: ./gradlew copyApplicationBuild
+
+      - store_artifacts:
+          path: ./app/build/libs/
+          destination: app
+
+      - store_artifacts:
+          path: ./core/build/libs/
+          destination: app
+
+      - store_artifacts:
+          path: ./database/build/libs/
+          destination: app
+
+      - store_artifacts:
+          path: ./services/build/libs/
+          destination: app
+
+      - store_artifacts:
+          path: ./api/build/libs/
+          destination: app
+
+      - store_artifacts:
+          path: ./batchjobs/build/libs/
+          destination: batchjobs
+
+      - store_artifacts:
+          path: ./migrations/build/libs/
+          destination: batchjobs
+
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  build_docker_image:
+    executor: jdk-executor
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --build-arg JAR_FILE=app/build/libs/app-0.0.1.jar -t garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7) .
+            docker build --build-arg JAR_FILE=migrations/build/libs/migrations-0.0.1.jar -f Dockerfile.migrations -t garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) .
+            docker build --build-arg JAR_FILE=batchjobs/build/libs/batchjobs-0.0.1.jar -f Dockerfile.jobs -t garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7) .
+      - run:
+          name: Save application Docker image
+          command: |
+            docker save -o user-service-image.tar garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker save -o user-service-migrations-image.tar garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker save -o user-service-jobs-image.tar garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7)
+
+      - store_artifacts:
+          path: ./user-service-image.tar
+          destination: user-service-image.tar
+
+      - store_artifacts:
+          path: ./user-service-migrations-image.tar
+          destination: user-service-migrations-image.tar
+
+      - store_artifacts:
+          path: ./user-service-jobs-image.tar
+          destination: user-service-jobs-image.tar
+
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  push_latest:
+    executor: docker-executor
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Load application Docker image
+          command: |
+            docker load --input user-service-image.tar
+            docker load --input user-service-migrations-image.tar
+            docker load --input user-service-jobs-image.tar
+      - run:
+          name: Tag docker image
+          command: |
+            docker tag garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service:latest
+            docker tag garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-migrations:latest
+            docker tag garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-jobs:latest
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/user-service:latest
+            docker push garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/user-service-migrations:latest
+            docker push garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/user-service-jobs:latest
+
+  push_production:
+    executor: docker-executor
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Load application Docker image
+          command: |
+            docker load --input user-service-image.tar
+            docker load --input user-service-migrations-image.tar
+            docker load --input user-service-jobs-image.tar
+      - run:
+          name: Tag docker image
+          command: |
+            docker tag garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service:production
+            docker tag garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-migrations:production
+            docker tag garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-jobs:production
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/user-service:production
+            docker push garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/user-service-migrations:production
+            docker push garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/user-service-jobs:production
+
+  publish_release:
+    executor: node-executor
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Publish release
+          command: npx semantic-release
+
+workflows:
+  version: 2
+  test_build_push_tag:
+    jobs:
+      - dependencies
+
+      - test:
+          requires:
+            - dependencies
+
+      - build:
+          requires:
+            - test
+
+      - build_docker_image:
+          filters:
+            branches:
+              only:
+                - develop
+                - beta
+                - alpha
+                - production
+          requires:
+            - build
+
+      - push_latest:
+          context: garihub-context
+          filters:
+            branches:
+              only:
+                - develop
+                - beta
+                - alpha
+          requires:
+            - build_docker_image
+
+      - push_production:
+          context: garihub-context
+          filters:
+            branches:
+              only:
+                - production
+          requires:
+            - build_docker_image
+
+      - publish_release:
+          context: garihub-context
+          filters:
+            branches:
+              only:
+                - production
+                - beta
+                - alpha
+          requires:
+            - push_production

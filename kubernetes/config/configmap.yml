@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-api-config
+  namespace: usermgt
+data:
+  port: '9090'
+  profile: 'dev'
+  driver_class: 'org.postgresql.Driver'
+  verify_endpoint: 'http://68.183.242.242/api/user-service/v1/verify'
+  sms_url: 'http://sms-svc.comms.svc.cluster.local:5000/api/v1/sms/'
+  email_url: 'http://email-svc.comms.svc.cluster.local:6000/api/v1/mail/'
+  auth_url: 'http://auth-http-svc.auth.svc.cluster.local:8080/auth'

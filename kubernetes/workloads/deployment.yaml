@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: usermgt
+  name: user-api
+  labels: &UserApi
+    app: user-api
+    role: user-mgt
+    stack: backend
+    tier: user-mgt
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *UserApi
+  template:
+    metadata:
+      labels: *UserApi
+    spec:
+      imagePullSecrets:
+        - name: docker-hub-registry
+
+      initContainers:
+
+        - name: migrations
+          image: garihublimited/user-service-migrations:latest
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: profile
+
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: driver_class
+
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-db
+                  key: url
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-db
+                  key: username
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-db
+                  key: password
+
+      containers:
+        - name: user-api
+          image: garihublimited/user-service
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 9090
+          readinessProbe:
+            httpGet:
+              port: 9090
+              path: /actuator/health
+          env:
+
+            - name: DEBUG
+              value: "false"
+
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-db
+                  key: url
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-db
+                  key: username
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-api-db
+                  key: password
+
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: driver_class
+
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: profile
+
+            - name: VERIFY_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: verify_endpoint
+
+            - name: AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: auth_url
+
+            - name: EMAIL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: email_url
+
+            - name: SMS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: user-api-config
+                  key: email_url

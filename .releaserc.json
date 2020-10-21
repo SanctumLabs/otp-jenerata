@@ -1,0 +1,10 @@
+{
+  "branches": ["production", {"name": "alpha", "prerelease": true}, {"name": "beta", "prerelease": true}],
+  "repositoryUrl": "https://github.com/GariHubLtd/user-service.git",
+  "tagFormat": "v${version}",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/github"
+  ]
+}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: usermgt
+  name: user-svc
+  labels: &UserApi
+    app: user-api
+    role: user-mgt
+    stack: backend
+    tier: user-mgt
+    version: v1
+spec:
+  selector: *UserApi
+  ports:
+    - port: 9090
+      name: http
