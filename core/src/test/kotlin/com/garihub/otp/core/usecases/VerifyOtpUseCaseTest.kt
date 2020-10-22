@@ -1,11 +1,18 @@
 package com.garihub.otp.core.usecases
 
+import com.garihub.otp.core.enums.OtpVerificationStatus
+import com.garihub.otp.core.exceptions.NotFoundException
 import com.garihub.otp.core.gateways.datastore.DataStore
+import com.garihub.otp.core.models.UserOtp
+import com.garihub.otp.core.models.UserVerifyOtp
+import com.garihub.otp.core.utils.verifyOtp
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.lang.IllegalArgumentException
+import java.time.LocalDateTime
 
 class VerifyOtpUseCaseTest {
 
@@ -15,80 +22,93 @@ class VerifyOtpUseCaseTest {
         VerifyOtpUseCase(mockDataStore)
     }
 
-    private val verificationToken = "verification-token"
+    private val otpCode = "123456"
+    private val mobilePhoneNumber = "254700000000"
+    private val userVerifyOtp = UserVerifyOtp(
+        otpCode = otpCode,
+        phoneNumber = mobilePhoneNumber
+    )
+    private val userOtp = UserOtp(
+        otpCode = otpCode,
+        phoneNumber = mobilePhoneNumber,
+        expiryTime = LocalDateTime.now()
+    )
 
-//    @Test
-//    fun `Should throw IllegalArgumentException when executed without verification token`() {
-//        val actual = Assertions.assertThrows(IllegalArgumentException::class.java) {
-//            verifyOtpUseCase.execute()
-//        }
-//
-//        Assertions.assertEquals("Verification token can not be null", actual.message)
-//    }
-//
-//    @Test
-//    fun `Should return Verification Failed Status when UserVerificationException is Thrown by data store`() {
-//        every {
-//            mockDataStore.verifyUserVerificationToken(verificationToken)
-//        } throws UserVerificationException("Can not verify user")
-//
-//        val actual = verifyOtpUseCase.execute(verificationToken)
-//
-//        Assertions.assertEquals(VerificationStatus.FAILED_VERIFICATION, actual)
-//    }
-//
-//    @Test
-//    fun `Should return User Not Found Status when NotFoundException is thrown`() {
-//        every {
-//            mockDataStore.verifyUserVerificationToken(verificationToken)
-//        } throws NotFoundException("User not found")
-//
-//        val actual = verifyOtpUseCase.execute(verificationToken)
-//
-//        Assertions.assertEquals(VerificationStatus.USER_NOT_FOUND, actual)
-//    }
-//
-//    @Test
-//    fun `Should return Token Expired status when VerificationTokenExpiredException is thrown`() {
-//        every {
-//            mockDataStore.verifyUserVerificationToken(verificationToken)
-//        } throws VerificationTokenExpiredException("Verification token expired")
-//
-//        val actual = verifyOtpUseCase.execute(verificationToken)
-//
-//        Assertions.assertEquals(VerificationStatus.TOKEN_EXPIRED, actual)
-//    }
-//
-//    @Test
-//    fun `Should return Authentication Failed status when AuthException is thrown`() {
-//        every {
-//            mockDataStore.verifyUserVerificationToken(verificationToken)
-//        } throws AuthException("Failed to authorize")
-//
-//        val actual = verifyOtpUseCase.execute(verificationToken)
-//
-//        Assertions.assertEquals(VerificationStatus.AUTHENTICATION_FAILED, actual)
-//    }
-//
-//    @Test
-//    fun `Should return Failed Verification status when there is a DB exception`() {
-//        every {
-//            mockDataStore.verifyUserVerificationToken(verificationToken)
-//        } throws DBException("DB exception")
-//
-//        val actual = verifyOtpUseCase.execute(verificationToken)
-//
-//        Assertions.assertEquals(VerificationStatus.FAILED_VERIFICATION, actual)
-//    }
-//
-//    @Test
-//    fun `Should return Failed Verification status when generic exception is thrown`() {
-//        every {
-//            mockDataStore.verifyUserVerificationToken(verificationToken)
-//        } throws Exception("Exception")
-//
-//        val actual = verifyOtpUseCase.execute(verificationToken)
-//
-//        Assertions.assertEquals(VerificationStatus.FAILED_VERIFICATION, actual)
-//    }
+    @Test
+    fun `Should throw IllegalArgumentException when executed without verification token`() {
+        val actual = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            verifyOtpUseCase.execute()
+        }
+
+        Assertions.assertEquals("OTP can not be null", actual.message)
+    }
+
+    @Test
+    fun `Should throw NotFoundException when user otp can not be found for given OTP code & mobile number`() {
+        every {
+            mockDataStore.getByOtpCodeAndPhoneNumber(otpCode, mobilePhoneNumber)
+        } returns null
+
+        Assertions.assertThrows(NotFoundException::class.java) { verifyOtpUseCase.execute(userVerifyOtp) }
+    }
+
+    @Test
+    fun `Should return OtpVerificationStatus VERIFIED when otp is successfully verified`() {
+        every {
+            mockDataStore.getByOtpCodeAndPhoneNumber(otpCode, mobilePhoneNumber)
+        } returns userOtp
+
+        mockkStatic("com.garihub.otp.core.utils.OtpUtilityKt")
+        every {
+            verifyOtp(userOtp)
+        } returns true
+
+        every {
+            mockDataStore.markOtpAsUsed(userOtp)
+        } returns true
+
+        val actual = verifyOtpUseCase.execute(userVerifyOtp)
+
+        Assertions.assertEquals(OtpVerificationStatus.VERIFIED, actual)
+    }
+
+    @Test
+    fun `Should return CODE expired when otp is not successfully verified`() {
+        every {
+            mockDataStore.getByOtpCodeAndPhoneNumber(otpCode, mobilePhoneNumber)
+        } returns userOtp
+
+        mockkStatic("com.garihub.otp.core.utils.OtpUtilityKt")
+        every {
+            verifyOtp(userOtp)
+        } returns false
+
+        every {
+            mockDataStore.markOtpAsUsed(userOtp)
+        } returns true
+
+        val actual = verifyOtpUseCase.execute(userVerifyOtp)
+
+        Assertions.assertEquals(OtpVerificationStatus.CODE_EXPIRED, actual)
+    }
+
+    @Test
+    fun `Should return Failed verification when datastore throws exception`() {
+        every {
+            mockDataStore.getByOtpCodeAndPhoneNumber(otpCode, mobilePhoneNumber)
+        } returns userOtp
+
+        mockkStatic("com.garihub.otp.core.utils.OtpUtilityKt")
+        every {
+            verifyOtp(userOtp)
+        } returns true
+
+        every {
+            mockDataStore.markOtpAsUsed(userOtp)
+        } throws Exception("Some Exception")
+
+        val actual = verifyOtpUseCase.execute(userVerifyOtp)
+
+        Assertions.assertEquals(OtpVerificationStatus.FAILED_VERIFICATION, actual)
+    }
 }

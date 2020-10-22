@@ -91,7 +91,7 @@ class OtpRestApiTest {
     fun `Should return Token Expired when OTP has expired`() {
         every {
             mockUserService.verifyOtp(userVerifyOtpDto)
-        } returns OtpVerificationStatus.TOKEN_EXPIRED
+        } returns OtpVerificationStatus.CODE_EXPIRED
 
         val expectedResponse =
             ResponseEntity(Collections.singletonMap("message", "Expired OTP"), HttpStatus.BAD_REQUEST)

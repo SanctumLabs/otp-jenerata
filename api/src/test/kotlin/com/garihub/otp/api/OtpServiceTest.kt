@@ -60,7 +60,7 @@ class OtpServiceTest {
     fun `Should return OTP Verification status when use case returns verification status`() {
         val verificationStatusList = listOf(
             OtpVerificationStatus.VERIFIED,
-            OtpVerificationStatus.TOKEN_EXPIRED,
+            OtpVerificationStatus.CODE_EXPIRED,
             OtpVerificationStatus.FAILED_VERIFICATION,
             OtpVerificationStatus.USER_NOT_FOUND
         )

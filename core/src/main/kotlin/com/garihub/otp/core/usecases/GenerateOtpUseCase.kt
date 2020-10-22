@@ -21,6 +21,7 @@ class GenerateOtpUseCase(
 
         val generatedOtp = generateOtp(otpKey, params)
 
+        @Suppress("TooGenericExceptionCaught")
         return try {
             val userOtp = UserOtp(
                 phoneNumber = params,

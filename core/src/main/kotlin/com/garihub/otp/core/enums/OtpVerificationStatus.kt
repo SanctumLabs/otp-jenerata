@@ -4,5 +4,5 @@ enum class OtpVerificationStatus {
     VERIFIED,
     FAILED_VERIFICATION,
     USER_NOT_FOUND,
-    TOKEN_EXPIRED
+    CODE_EXPIRED
 }
