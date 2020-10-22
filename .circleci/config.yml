@@ -183,7 +183,9 @@ jobs:
           name: Tag docker image
           command: |
             docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:latest
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:latest-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:latest
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:latest-$(echo $CIRCLE_SHA1 | cut -c1-7)
       - run:
           name: Push application Docker image
           command: |
@@ -209,7 +211,9 @@ jobs:
           name: Tag docker image
           command: |
             docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:alpha
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:alpha-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:alpha
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:alpha-$(echo $CIRCLE_SHA1 | cut -c1-7)
       - run:
           name: Push application Docker image
           command: |
@@ -235,7 +239,9 @@ jobs:
           name: Tag docker image
           command: |
             docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:beta
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:beta-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:beta
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:beta-$(echo $CIRCLE_SHA1 | cut -c1-7)
       - run:
           name: Push application Docker image
           command: |
@@ -261,7 +267,9 @@ jobs:
           name: Tag docker image
           command: |
             docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:production
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:production-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:production
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:production-$(echo $CIRCLE_SHA1 | cut -c1-7)
       - run:
           name: Push application Docker image
           command: |
