@@ -188,9 +188,9 @@ jobs:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:latest-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator:latest
-            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:latest-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator-migrations:latest
 
   push_alpha:
@@ -214,9 +214,9 @@ jobs:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:alpha-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator:alpha
-            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:alpha-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator-migrations:alpha
 
   push_beta:
@@ -240,9 +240,9 @@ jobs:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:beta-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator:beta
-            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:beta-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator-migrations:beta
 
   push_production:
@@ -266,9 +266,9 @@ jobs:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:production-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator:production
-            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:production-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator-migrations:production
 
   publish_release:

@@ -42,7 +42,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: otp-gen-db
-                  key: url
+                  key: url_pool
 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
@@ -58,7 +58,7 @@ spec:
 
       containers:
         - name: otp-gen
-          image: garihublimited/otp-generator
+          image: garihublimited/otp-generator:latest
           imagePullPolicy: Always
           ports:
             - name: http
@@ -76,7 +76,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: otp-gen-db
-                  key: url
+                  key: url_pools
 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
