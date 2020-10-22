@@ -7,16 +7,10 @@ object Libs {
         const val starter = "org.springframework.boot:spring-boot-starter"
         const val springFoxSwaggerUi = "io.springfox:springfox-swagger-ui:2.9.2"
         const val springFoxSwagger2 = "io.springfox:springfox-swagger2:2.9.2"
-        const val thymeleaf = "org.springframework.boot:spring-boot-starter-thymeleaf:${Versions.springBootVersion}"
         const val web = "org.springframework.boot:spring-boot-starter-web:${Versions.springBootVersion}"
-        const val batch = "org.springframework.boot:spring-boot-starter-batch:${Versions.springBootVersion}"
 
         object Test {
             const val starterTest = "org.springframework.boot:spring-boot-starter-test"
-        }
-
-        object Tools {
-            const val devTools = "org.springframework.boot:spring-boot-devtools"
         }
     }
 
@@ -36,7 +30,9 @@ object Libs {
         const val libPhoneNumber = "com.googlecode.libphonenumber:libphonenumber:8.12.8"
         const val libPhoneNumberGeocoder = "com.googlecode.libphonenumber:geocoder:2.108"
         const val libPhoneNumberCarrier = "com.googlecode.libphonenumber:carrier:1.99"
-        const val thymeleaf = "org.springframework.boot:spring-boot-starter-thymeleaf:${Versions.springBootVersion}"
+
+        // Ref: https://github.com/marcelkliemannel/kotlin-onetimepassword
+        const val otpGenerator = "dev.turingcomplete:kotlin-onetimepassword:2.0.1"
     }
 
     object Network {

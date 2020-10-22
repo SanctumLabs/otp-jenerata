@@ -55,7 +55,7 @@ allprojects {
         jcenter()
     }
 
-    group = "com.garihub.user"
+    group = "com.garihub.otp"
     version = "0.0.1"
 
     tasks.withType<JavaCompile> {
@@ -68,7 +68,6 @@ allprojects {
             kotlinOptions {
                 freeCompilerArgs = listOf("-Xjsr305=strict")
                 jvmTarget = "${JavaVersion.VERSION_11}"
-//                jvmTarget = "${JavaVersion.VERSION_1_8}"
             }
         }
     }
@@ -182,7 +181,7 @@ val copyApplicationBuild by tasks.registering(Copy::class) {
     description = "Copies app build from app/config/build to $rootDir/app/build"
     from("$rootDir/app/build/.") {
         include("**/*")
-        rename("app-(.*).jar", "user-api-service-$1.jar")
+        rename("app-(.*).jar", "otp-generator-$1.jar")
     }
     into("$rootDir/build/")
     dependsOn.add(setOf("app:bootJar"))
@@ -194,7 +193,7 @@ val copyApplicationBuild by tasks.registering(Copy::class) {
 
 // ref https://github.com/palantir/gradle-docker
 docker {
-    name = "${System.getenv("CI_REGISTRY") ?: "garihublimited"}/user-service"
+    name = "${System.getenv("CI_REGISTRY") ?: "garihublimited"}/otp-generator"
     setDockerfile(file("Dockerfile"))
     copySpec.from("app/build/libs/app-0.0.1.jar").into("build")
     buildArgs(mapOf("JAR_FILE" to "build/app-0.0.1.jar"))
@@ -204,7 +203,7 @@ docker {
 sonarqube {
     properties {
         property("sonar.host.url", System.getenv("SONAR_SERVER_URL") ?: "http:localhost:9000")
-        property("sonar.projectDescription", "User API Service")
+        property("sonar.projectDescription", "OTP Generator Service")
         property("sonar.java.coveragePlugin", "jacoco")
     }
 }

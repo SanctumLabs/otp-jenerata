@@ -1,6 +1,6 @@
 {
   "branches": ["production", {"name": "alpha", "prerelease": true}, {"name": "beta", "prerelease": true}],
-  "repositoryUrl": "https://github.com/GariHubLtd/user-service.git",
+  "repositoryUrl": "https://github.com/GariHubLtd/otp-service.git",
   "tagFormat": "v${version}",
   "plugins": [
     "@semantic-release/commit-analyzer",

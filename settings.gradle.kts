@@ -1,4 +1,4 @@
-rootProject.name = "user-api"
+rootProject.name = "otp-geneator"
 rootProject.buildFileName = "build.gradle.kts"
 
 include(
@@ -6,7 +6,5 @@ include(
     "core",
     "database",
     "api",
-    "services",
-    "migrations",
-    "batchjobs"
+    "migrations"
 )

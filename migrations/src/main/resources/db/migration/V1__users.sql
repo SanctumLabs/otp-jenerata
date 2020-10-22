@@ -1,27 +1,15 @@
-create table if not exists users
+create table if not exists user_otps
 (
     id                 int          not null,
     created_on         timestamp default current_timestamp,
     updated_on         timestamp default current_timestamp,
-    identifier         varchar(255) not null,
-    external_identifier         varchar(255) null,
-    first_name       varchar(250)  not null,
-    last_name       varchar(250)  not null,
-    email_address              varchar(255) not null,
-    email_verified              boolean  default false,
+    otp_code         varchar(6) not null,
     phone_number              varchar(255) not null,
-    gender        varchar(50) not null,
-    account_status   varchar(15) not null,
-    verification_email_sent   boolean default false not null,
-    user_type         varchar(20)  not null,
-    verify_token         varchar(255)  null,
-    verify_expiry_date         timestamp   null,
-    constraint user_pk
+    otp_used        boolean default false not null,
+    expiry_time       timestamp  not null,
+    constraint user_otp_pk
         primary key (id)
 );
 
-create unique index user_identifier_uindex
-    on users (identifier);
-
-create unique index user_external_identifier_uindex
-    on users (external_identifier);
+create unique index user_phone_number_uindex
+    on user_otps (phone_number);

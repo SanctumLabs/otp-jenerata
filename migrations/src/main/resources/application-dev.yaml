@@ -1,3 +1,10 @@
 logging:
   level:
     root: DEBUG
+
+spring:
+  datasource:
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:tcp://localhost:1521/otp;DB_CLOSE_DELAY=-1}
+    username: ${SPRING_DATASOURCE_USERNAME:otp}
+    password: ${SPRING_DATASOURCE_PASSWORD:otp-pass}

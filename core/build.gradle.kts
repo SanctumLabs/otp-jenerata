@@ -8,4 +8,5 @@ dependencies {
     implementation(Libs.Utils.libPhoneNumber)
     implementation(Libs.Utils.libPhoneNumberCarrier)
     implementation(Libs.Utils.libPhoneNumberGeocoder)
+    implementation(Libs.Utils.otpGenerator)
 }

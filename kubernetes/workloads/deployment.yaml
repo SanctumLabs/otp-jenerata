@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: usermgt
-  name: user-api
-  labels: &UserApi
-    app: user-api
-    role: user-mgt
+  namespace: auth
+  name: otp-generator
+  labels: &OtpGen
+    app: otp
+    role: otp
     stack: backend
-    tier: user-mgt
+    tier: auth
     version: v1
 spec:
   replicas: 1
   selector:
-    matchLabels: *UserApi
+    matchLabels: *OtpGen
   template:
     metadata:
-      labels: *UserApi
+      labels: *OtpGen
     spec:
       imagePullSecrets:
         - name: docker-hub-registry
@@ -23,49 +23,49 @@ spec:
       initContainers:
 
         - name: migrations
-          image: garihublimited/user-service-migrations:latest
+          image: garihublimited/otp-generator-migrations:latest
           imagePullPolicy: Always
           env:
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: profile
 
             - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: driver_class
 
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 secretKeyRef:
-                  name: user-api-db
+                  name: otp-gen-db
                   key: url
 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: user-api-db
+                  name: otp-gen-db
                   key: username
 
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: user-api-db
+                  name: otp-gen-db
                   key: password
 
       containers:
-        - name: user-api
-          image: garihublimited/user-service
+        - name: otp-gen
+          image: garihublimited/otp-generator
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 9090
+              containerPort: 9000
           readinessProbe:
             httpGet:
-              port: 9090
+              port: 9000
               path: /actuator/health
           env:
 
@@ -75,53 +75,53 @@ spec:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 secretKeyRef:
-                  name: user-api-db
+                  name: otp-gen-db
                   key: url
 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: user-api-db
+                  name: otp-gen-db
                   key: username
 
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: user-api-db
+                  name: otp-gen-db
                   key: password
 
             - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: driver_class
 
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: profile
 
             - name: VERIFY_ENDPOINT
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: verify_endpoint
 
             - name: AUTH_URL
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: auth_url
 
             - name: EMAIL_URL
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: email_url
 
             - name: SMS_URL
               valueFrom:
                 configMapKeyRef:
-                  name: user-api-config
+                  name: otp-gen-config
                   key: email_url

@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: user-api-vs
+  name: otp-gen-vs
   namespace: usermgt
 spec:
   hosts:
@@ -9,12 +9,12 @@ spec:
   gateways:
     - default/garihub-gateway
   http:
-    - name: garihub-user-api
+    - name: garihub-otp-gen
       match:
         - uri:
-            prefix: /api/user-service/v1/
+            prefix: /api/otp-service/v1/
       route:
         - destination:
             host: user-svc
             port:
-              number: 9090
+              number: 9000

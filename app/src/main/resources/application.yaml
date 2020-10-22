@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 9000
 
 spring:
   devtools:
@@ -9,25 +9,13 @@ spring:
       ddl: validate
   datasource:
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/users}
-    username: ${SPRING_DATASOURCE_USERNAME:user}
-    password: ${SPRING_DATASOURCE_PASSWORD:user-pass}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/otps}
+    username: ${SPRING_DATASOURCE_USERNAME:otp}
+    password: ${SPRING_DATASOURCE_PASSWORD:otp-pass}
 
 logging:
   level:
     root: INFO
 
-services:
-  auth:
-    url: ${AUTH_URL:http://localhost:8080/auth}
-    masterRealm: ${AUTH_MASTER_REALM:master}
-    riderRealm: ${AUTH_RIDER_REALM:garihub-rider}
-    driverRealm: ${AUTH_DRIVER_REALM:garihub-driver}
-    admin:
-      username: ${AUTH_ADMIN_USERNAME:admin}
-      password: ${AUTH_ADMIN_PASSWORD:admin}
-      clientId: ${AUTH_ADMIN_CLIENT_ID:admin-cli}
-      grantType: ${AUTH_ADMIN_GRANT_TYPE:password}
-
-  email:
-    url: ${EMAIL_URL:http://localhost:6000/api/v1/mail}
+otp:
+  key: ${OTP_SECRET:testkey}

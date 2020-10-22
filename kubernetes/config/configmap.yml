@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user-api-config
-  namespace: usermgt
+  name: otp-gen-config
+  namespace: auth
 data:
-  port: '9090'
+  port: '9000'
   profile: 'dev'
   driver_class: 'org.postgresql.Driver'
   verify_endpoint: 'http://68.183.242.242/api/user-service/v1/verify'

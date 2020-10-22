@@ -29,7 +29,6 @@ apply(plugin = "kotlin-spring")
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":services"))
     implementation(project(":database"))
     implementation(project(":api"))
 

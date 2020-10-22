@@ -3,19 +3,19 @@ executors:
   jdk-executor:
     docker:
       - image: circleci/openjdk:14-jdk-buster
-    working_directory: ~/user-service
+    working_directory: ~/otp-generator
 
   docker-executor:
     docker:
       - image: docker:17.05.0-ce-git
     environment:
       MAVEN_OPTS: -Xmx3200m
-    working_directory: ~/user-service
+    working_directory: ~/otp-generator
 
   node-executor:
     docker:
       - image: circleci/node:10
-    working_directory: ~/user-service
+    working_directory: ~/otp-generator
 
 jobs:
   dependencies:
@@ -109,10 +109,6 @@ jobs:
           command: ./gradlew migrations:bootJar
 
       - run:
-          name: Build batchjobs application
-          command: ./gradlew batchjobs:bootJar
-
-      - run:
           name: Copy build artifacts
           command: ./gradlew copyApplicationBuild
 
@@ -129,16 +125,8 @@ jobs:
           destination: app
 
       - store_artifacts:
-          path: ./services/build/libs/
-          destination: app
-
-      - store_artifacts:
           path: ./api/build/libs/
           destination: app
-
-      - store_artifacts:
-          path: ./batchjobs/build/libs/
-          destination: batchjobs
 
       - store_artifacts:
           path: ./migrations/build/libs/
@@ -158,27 +146,22 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            docker build --build-arg JAR_FILE=app/build/libs/app-0.0.1.jar -t garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7) .
-            docker build --build-arg JAR_FILE=migrations/build/libs/migrations-0.0.1.jar -f Dockerfile.migrations -t garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) .
-            docker build --build-arg JAR_FILE=batchjobs/build/libs/batchjobs-0.0.1.jar -f Dockerfile.jobs -t garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7) .
+            docker build --build-arg JAR_FILE=app/build/libs/app-0.0.1.jar -t garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) .
+            docker build --build-arg JAR_FILE=migrations/build/libs/migrations-0.0.1.jar -f Dockerfile.migrations -t garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) .
+
       - run:
           name: Save application Docker image
           command: |
-            docker save -o user-service-image.tar garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker save -o user-service-migrations-image.tar garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker save -o user-service-jobs-image.tar garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker save -o otp-generator-image.tar garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker save -o otp-generator-migrations-image.tar garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
 
       - store_artifacts:
-          path: ./user-service-image.tar
-          destination: user-service-image.tar
+          path: ./otp-generator-image.tar
+          destination: otp-generator-image.tar
 
       - store_artifacts:
-          path: ./user-service-migrations-image.tar
-          destination: user-service-migrations-image.tar
-
-      - store_artifacts:
-          path: ./user-service-jobs-image.tar
-          destination: user-service-jobs-image.tar
+          path: ./otp-generator-migrations-image.tar
+          destination: otp-generator-migrations-image.tar
 
       - persist_to_workspace:
           root: .
@@ -194,25 +177,73 @@ jobs:
       - run:
           name: Load application Docker image
           command: |
-            docker load --input user-service-image.tar
-            docker load --input user-service-migrations-image.tar
-            docker load --input user-service-jobs-image.tar
+            docker load --input otp-generator-image.tar
+            docker load --input otp-generator-migrations-image.tar
       - run:
           name: Tag docker image
           command: |
-            docker tag garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service:latest
-            docker tag garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-migrations:latest
-            docker tag garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-jobs:latest
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:latest
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:latest
       - run:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker push garihublimited/user-service:latest
-            docker push garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker push garihublimited/user-service-migrations:latest
-            docker push garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker push garihublimited/user-service-jobs:latest
+            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:latest
+            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:latest
+
+  push_alpha:
+    executor: docker-executor
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Load application Docker image
+          command: |
+            docker load --input otp-generator-image.tar
+            docker load --input otp-generator-migrations-image.tar
+      - run:
+          name: Tag docker image
+          command: |
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:alpha
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:alpha
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:alpha
+            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:alpha
+
+  push_beta:
+    executor: docker-executor
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Load application Docker image
+          command: |
+            docker load --input otp-generator-image.tar
+            docker load --input otp-generator-migrations-image.tar
+      - run:
+          name: Tag docker image
+          command: |
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:beta
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:beta
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:beta
+            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:beta
 
   push_production:
     executor: docker-executor
@@ -224,25 +255,21 @@ jobs:
       - run:
           name: Load application Docker image
           command: |
-            docker load --input user-service-image.tar
-            docker load --input user-service-migrations-image.tar
-            docker load --input user-service-jobs-image.tar
+            docker load --input otp-generator-image.tar
+            docker load --input otp-generator-migrations-image.tar
       - run:
           name: Tag docker image
           command: |
-            docker tag garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service:production
-            docker tag garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-migrations:production
-            docker tag garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/user-service-jobs:production
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:production
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:production
       - run:
           name: Push application Docker image
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push garihublimited/user-service:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker push garihublimited/user-service:production
-            docker push garihublimited/user-service-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker push garihublimited/user-service-migrations:production
-            docker push garihublimited/user-service-jobs:$(echo $CIRCLE_SHA1 | cut -c1-7)
-            docker push garihublimited/user-service-jobs:production
+            docker push garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:production
+            docker push garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:production
 
   publish_release:
     executor: node-executor
@@ -285,8 +312,24 @@ workflows:
             branches:
               only:
                 - develop
-                - beta
+          requires:
+            - build_docker_image
+
+      - push_alpha:
+          context: garihub-context
+          filters:
+            branches:
+              only:
                 - alpha
+          requires:
+            - build_docker_image
+
+      - push_beta:
+          context: garihub-context
+          filters:
+            branches:
+              only:
+                - beta
           requires:
             - build_docker_image
 

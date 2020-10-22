@@ -1,8 +1,8 @@
-# User API
+# OTP Service
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-Backend API service handling User management
+Backend API service One Time Password generation
 
 ## Getting Started
 

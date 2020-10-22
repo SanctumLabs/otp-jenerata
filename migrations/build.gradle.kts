@@ -15,9 +15,9 @@ plugins {
 
 // REF: https://flywaydb.org/documentation/gradle/
 flyway {
-    url = System.getenv("SPRING_DATASOURCE_URL") ?: "jdbc:postgresql://localhost:5434/users"
-    user = System.getenv("SPRING_DATASOURCE_USERNAME") ?: "user"
-    password = System.getenv("SPRING_DATASOURCE_PASSWORD") ?: "user-pass"
+    url = System.getenv("SPRING_DATASOURCE_URL") ?: "jdbc:postgresql://localhost:5435/otps"
+    user = System.getenv("SPRING_DATASOURCE_USERNAME") ?: "otp"
+    password = System.getenv("SPRING_DATASOURCE_PASSWORD") ?: "otp-pass"
     schemas = arrayOf(System.getenv("DB_SCHEMA") ?: "public")
 }
 
@@ -45,17 +45,17 @@ tasks.getByName<BootRun>("bootRun") {
 jib {
     container {
         creationTime = "USE_CURRENT_TIMESTAMP"
-        labels = mapOf(Pair("MAINTAINER", "Ceberus"))
+        labels = mapOf(Pair("MAINTAINER", "GariHub"))
     }
     to {
         image =
-            "${System.getenv("BUILD_ENV_DOCKER_REGISTRY") ?: "garihublimited"}/user-service-migrations:1.0-SNAPSHOT"
+            "${System.getenv("BUILD_ENV_DOCKER_REGISTRY") ?: "garihublimited"}/otp-generator-migrations:1.0-SNAPSHOT"
     }
 }
 
 // ref https://github.com/palantir/gradle-docker
 docker {
-    name = "${System.getenv("BUILD_ENV_DOCKER_REGISTRY") ?: "garihublimited"}/user-service-migrations:1.0-SNAPSHOT"
+    name = "${System.getenv("BUILD_ENV_DOCKER_REGISTRY") ?: "garihublimited"}/otp-generator-migrations:1.0-SNAPSHOT"
     setDockerfile(file("../Dockerfile.migrations"))
     copySpec.from("build/libs/migrations-0.0.1-SNAPSHOT.jar").into("build")
     buildArgs(mapOf("JAR_FILE" to "build/migrations-0.0.1-SNAPSHOT.jar"))

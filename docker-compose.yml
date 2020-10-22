@@ -2,21 +2,21 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:9.6
-    container_name: user-api-db
+    image: postgres:12
+    container_name: otp-api-db
     hostname: db
     environment:
-      POSTGRES_PASSWORD: user-pass
-      POSTGRES_USER: user
-      POSTGRES_DB: users
+      POSTGRES_PASSWORD: otp-pass
+      POSTGRES_USER: otp
+      POSTGRES_DB: otps
     ports:
-      - 5434:5432
+      - 5435:5432
     volumes:
       - db:/var/lib/postgresql/data
 
   h2:
     image: oscarfonts/h2
-    container_name: user-api-db-h2
+    container_name: otp-api-db-h2
     hostname: h2
     environment:
       - H2_OPTIONS=-ifNotExists
@@ -28,7 +28,7 @@ services:
 
   adminer:
     image: adminer
-    container_name: user-api-adminer
+    container_name: otp-api-adminer
     ports:
       - 8081:8080
 
