@@ -14,19 +14,15 @@ class DataStoreImplTest {
         DataStoreImpl(mockUserRepository)
     }
 
-    private val identifier = "some-identifier"
-    private val verificationToken = "verification-token"
+    private val otpCode = "123456"
+    private val phoneNumber = "254700000000"
 
-//    private val userEntity = UserOtpEntity(
-//        identifier = identifier,
-//        firstName = "John",
-//        lastName = "Doe",
-//        gender = Gender.MALE,
-//        phoneNumber = "+254700000000",
-//        emailAddress = "johndoe@example.com",
-//        userType = UserType.RIDER
-//    )
-//
+    private val userEntity = UserOtpEntity(
+        phoneNumber = phoneNumber,
+        otpCode = otpCode,
+        expiryTime = LocalDateTime.now()
+    )
+
 //    @Test
 //    fun `Should throw NotFoundException when user can't be found by verification`() {
 //        every {
