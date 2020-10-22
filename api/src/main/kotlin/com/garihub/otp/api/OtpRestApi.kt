@@ -47,13 +47,14 @@ class OtpRestApi(private val otpService: OtpService) {
             OtpVerificationStatus.FAILED_VERIFICATION -> ResponseEntity(
                 Collections.singletonMap(
                     "message",
-                    "User not found or token expired"
-                ), HttpStatus.BAD_REQUEST
+                    "Failed to verify otp"
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR
             )
             OtpVerificationStatus.TOKEN_EXPIRED -> ResponseEntity(
                 Collections.singletonMap(
                     "message",
-                    "Expired Token"
+                    "Expired OTP"
                 ), HttpStatus.BAD_REQUEST
             )
             OtpVerificationStatus.USER_NOT_FOUND -> ResponseEntity(

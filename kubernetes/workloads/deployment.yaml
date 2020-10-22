@@ -102,26 +102,8 @@ spec:
                   name: otp-gen-config
                   key: profile
 
-            - name: VERIFY_ENDPOINT
+            - name: OTP_SECRET
               valueFrom:
-                configMapKeyRef:
-                  name: otp-gen-config
-                  key: verify_endpoint
-
-            - name: AUTH_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: otp-gen-config
-                  key: auth_url
-
-            - name: EMAIL_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: otp-gen-config
-                  key: email_url
-
-            - name: SMS_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: otp-gen-config
-                  key: email_url
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: otp_secret
