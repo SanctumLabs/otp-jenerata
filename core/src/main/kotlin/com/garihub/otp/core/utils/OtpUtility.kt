@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
-private const val AMOUNT_TO_ADD = 60L
+private const val AMOUNT_TO_ADD = 180L
 
 private val config = TimeBasedOneTimePasswordConfig(
     codeDigits = 6,
