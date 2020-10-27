@@ -251,6 +251,34 @@ jobs:
             docker push garihublimited/otp-generator-migrations:beta-$(echo $CIRCLE_SHA1 | cut -c1-7)
             docker push garihublimited/otp-generator-migrations:beta
 
+  push_rc:
+    executor: docker-executor
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Load application Docker image
+          command: |
+            docker load --input otp-generator-image.tar
+            docker load --input otp-generator-migrations-image.tar
+      - run:
+          name: Tag docker image
+          command: |
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:rc
+            docker tag garihublimited/otp-generator:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator:rc-$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:rc
+            docker tag garihublimited/otp-generator-migrations:$(echo $CIRCLE_SHA1 | cut -c1-7) garihublimited/otp-generator-migrations:rc-$(echo $CIRCLE_SHA1 | cut -c1-7)
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push garihublimited/otp-generator:rc-$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator:rc
+            docker push garihublimited/otp-generator-migrations:rc-$(echo $CIRCLE_SHA1 | cut -c1-7)
+            docker push garihublimited/otp-generator-migrations:rc
+
   push_production:
     executor: docker-executor
     steps:
@@ -308,8 +336,9 @@ workflows:
             branches:
               only:
                 - develop
-                - beta
                 - alpha
+                - beta
+                - rc
                 - production
           requires:
             - build
@@ -341,6 +370,15 @@ workflows:
           requires:
             - build_docker_image
 
+      - push_rc:
+          context: garihub-context
+          filters:
+            branches:
+              only:
+                - rc
+          requires:
+            - build_docker_image
+
       - push_production:
           context: garihub-context
           filters:
@@ -358,5 +396,9 @@ workflows:
                 - production
                 - beta
                 - alpha
+                - rc
           requires:
             - push_production
+            - push_rc
+            - push_beta
+            - push_alpha

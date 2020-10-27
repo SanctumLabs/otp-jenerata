@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: auth
+  name: otp-generator
+  labels: &OtpGen
+    app: otp
+    role: otp
+    stack: backend
+    tier: auth
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *OtpGen
+  template:
+    metadata:
+      labels: *OtpGen
+    spec:
+      imagePullSecrets:
+        - name: docker-hub-registry
+
+      initContainers:
+
+        - name: migrations
+          image: garihublimited/otp-generator-migrations:rc
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: otp-gen-config
+                  key: profile
+
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: otp-gen-config
+                  key: driver_class
+
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: url_pool
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: username
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: password
+
+      containers:
+        - name: otp-gen
+          image: garihublimited/otp-generator:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 9000
+          readinessProbe:
+            httpGet:
+              port: 9000
+              path: /actuator/health
+          env:
+
+            - name: DEBUG
+              value: "false"
+
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: url_pools
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: username
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: password
+
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: otp-gen-config
+                  key: driver_class
+
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: otp-gen-config
+                  key: profile
+
+            - name: OTP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: otp-gen-db
+                  key: otp_secret
