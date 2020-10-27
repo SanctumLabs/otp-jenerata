@@ -1,5 +1,5 @@
 {
-  "branches": ["production", {"name": "rc", "prerelease": true}, ,{"name": "beta", "prerelease": true}, {"name": "alpha", "prerelease": true}],
+  "branches": ["production", {"name": "rc", "prerelease": true}, {"name": "beta", "prerelease": true}, {"name": "alpha", "prerelease": true}],
   "repositoryUrl": "https://github.com/garihubltd/otp-service.git",
   "tagFormat": "v${version}",
   "plugins": [
