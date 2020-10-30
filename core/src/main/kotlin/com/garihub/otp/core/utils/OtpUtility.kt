@@ -16,7 +16,7 @@ private const val AMOUNT_TO_ADD = 180L
 private val config = TimeBasedOneTimePasswordConfig(
     codeDigits = 6,
     hmacAlgorithm = HmacAlgorithm.SHA1,
-    timeStep = 60, //duration in which otp is valid
+    timeStep = 180, //duration in which otp is valid
     timeStepUnit = TimeUnit.SECONDS
 )
 
