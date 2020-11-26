@@ -1,5 +1,4 @@
 package com.garihub.otp.core
 
-typealias MobilePhoneNumber = String
+typealias PhoneNumberOrEmail = String
 typealias OtpCode = String
-typealias EmailAddress = String

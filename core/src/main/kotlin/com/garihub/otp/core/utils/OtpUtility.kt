@@ -31,7 +31,7 @@ fun generateOtp(otpKey: String, phoneNumber: String): UserOtp {
     val date = Date(epochSeconds)
     val otpCode = codeGenerator.generate(timestamp = date)
 
-    return UserOtp(otpCode = otpCode, phoneNumber = phoneNumber, expiryTime = expiryTime)
+    return UserOtp(otpCode = otpCode, phoneNumberOrEmail = phoneNumber, expiryTime = expiryTime)
 }
 
 fun verifyOtp(otpEntity: UserOtp): Boolean {

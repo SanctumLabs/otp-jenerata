@@ -24,12 +24,12 @@ class OtpRestApiTest {
         phoneNumber = "254700000000"
     )
     private val userOtpResponseDto = UserOtpResponseDto(
-        phoneNumber = "254700000000",
+        phoneNumberOrEmail = "254700000000",
         otpCode = otpCode
     )
 
     private val userVerifyOtpDto = UserVerifyOtpDto(
-        phoneNumber = "254700000000",
+        phoneNumberOrEmail = "254700000000",
         otpCode = otpCode
     )
 

@@ -13,7 +13,7 @@ class VerifyOtpUseCase(private val dataStore: DataStore) : UseCase<UserVerifyOtp
     override fun execute(params: UserVerifyOtp?): OtpVerificationStatus {
         requireNotNull(params) { "OTP can not be null" }
 
-        val userOtp = dataStore.getByOtpCodeAndPhoneNumber(params.otpCode, params.phoneNumber)
+        val userOtp = dataStore.getByOtpCodeAndPhoneNumber(params.otpCode, params.phoneNumberOrEmail)
             ?: throw NotFoundException("User OTP Not found")
 
         @Suppress("TooGenericExceptionCaught")

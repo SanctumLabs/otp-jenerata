@@ -25,7 +25,7 @@ class OtpService(
         @Suppress("TooGenericExceptionCaught")
         return try {
             verifyOtpUseCase.execute(
-                UserVerifyOtp(otpCode = userVerifyOtp.otpCode, phoneNumber = userVerifyOtp.phoneNumber)
+                UserVerifyOtp(otpCode = userVerifyOtp.otpCode, phoneNumberOrEmail = userVerifyOtp.phoneNumberOrEmail)
             )
         } catch (e: Exception) {
             OtpVerificationStatus.FAILED_VERIFICATION

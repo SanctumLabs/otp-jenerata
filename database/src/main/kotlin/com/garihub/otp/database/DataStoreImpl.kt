@@ -1,6 +1,6 @@
 package com.garihub.otp.database
 
-import com.garihub.otp.core.MobilePhoneNumber
+import com.garihub.otp.core.PhoneNumberOrEmail
 import com.garihub.otp.core.OtpCode
 import com.garihub.otp.core.exceptions.DBException
 import com.garihub.otp.core.exceptions.NotFoundException
@@ -13,40 +13,40 @@ class DataStoreImpl(private val userOtpRepository: UserOtpRepository) : DataStor
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    override fun getByOtpCodeAndPhoneNumber(otpCode: OtpCode, phoneNumber: MobilePhoneNumber): UserOtp? {
-        val userOtp = userOtpRepository.findByOtpCodeAndPhoneNumber(otpCode, phoneNumber)
+    override fun getByOtpCodeAndPhoneNumber(otpCode: OtpCode, phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp? {
+        val userOtp = userOtpRepository.findUserOtpByOtpCodeAndPhoneNumber(otpCode, phoneNumberOrEmail)
             ?: throw NotFoundException("User OTP not found")
         try {
             return UserOtp(
                 otpCode = userOtp.otpCode,
-                phoneNumber = userOtp.phoneNumber,
+                phoneNumberOrEmail = userOtp.phoneNumberOrEmail,
                 expiryTime = userOtp.expiryTime,
                 otpUsed = userOtp.otpUsed
             )
         } catch (e: Exception) {
-            logger.error("Failed to get UserOtp for Code: $otpCode & Phone: $phoneNumber. Err: ${e.message}")
+            logger.error("Failed to get UserOtp for Code: $otpCode & Phone: $phoneNumberOrEmail. Err: ${e.message}")
             throw DBException("Failed to get UserOtp. Err: ${e.message}")
         }
     }
 
-    override fun getByPhoneNumber(phoneNumber: MobilePhoneNumber): UserOtp? {
-        val userOtp = userOtpRepository.findByPhoneNumber(phoneNumber) ?: throw NotFoundException("User OTP not found")
+    override fun getByPhoneNumber(phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp? {
+        val userOtp = userOtpRepository.findUserOtpByPhoneNumberOrEmail(phoneNumberOrEmail) ?: throw NotFoundException("User OTP not found")
 
         try {
             return UserOtp(
                 otpCode = userOtp.otpCode,
-                phoneNumber = userOtp.phoneNumber,
+                phoneNumberOrEmail = userOtp.phoneNumberOrEmail,
                 expiryTime = userOtp.expiryTime,
                 otpUsed = userOtp.otpUsed
             )
         } catch (e: Exception) {
-            logger.error("Failed to get UserOtp for Phone: $phoneNumber. Err: ${e.message}")
+            logger.error("Failed to get UserOtp for Phone: $phoneNumberOrEmail. Err: ${e.message}")
             throw DBException("Failed to get UserOtp. Err: ${e.message}")
         }
     }
 
     override fun saveOtpCode(userOtp: UserOtp): Boolean {
-        val existingUserOtp = userOtpRepository.findByPhoneNumber(userOtp.phoneNumber)
+        val existingUserOtp = userOtpRepository.findUserOtpByPhoneNumberOrEmail(userOtp.phoneNumberOrEmail)
 
         try {
             // we are updating it
@@ -59,7 +59,7 @@ class DataStoreImpl(private val userOtpRepository: UserOtpRepository) : DataStor
                 // this is a new record
                 val userOtpEntity = UserOtpEntity(
                     otpCode = userOtp.otpCode,
-                    phoneNumber = userOtp.phoneNumber,
+                    phoneNumberOrEmail = userOtp.phoneNumberOrEmail,
                     expiryTime = userOtp.expiryTime
                 )
                 userOtpRepository.save(userOtpEntity)
@@ -73,7 +73,7 @@ class DataStoreImpl(private val userOtpRepository: UserOtpRepository) : DataStor
 
     override fun markOtpAsUsed(userOtp: UserOtp): Boolean {
         val existingUserOtp =
-            userOtpRepository.findByPhoneNumber(userOtp.phoneNumber) ?: throw NotFoundException("User OTP not found")
+            userOtpRepository.findUserOtpByPhoneNumberOrEmail(userOtp.phoneNumberOrEmail) ?: throw NotFoundException("User OTP not found")
         existingUserOtp.otpUsed = true
 
         return try {

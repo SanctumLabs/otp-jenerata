@@ -1,6 +1,6 @@
 package com.garihub.otp.core.gateways.datastore
 
-import com.garihub.otp.core.MobilePhoneNumber
+import com.garihub.otp.core.PhoneNumberOrEmail
 import com.garihub.otp.core.OtpCode
 import com.garihub.otp.core.exceptions.DBException
 import com.garihub.otp.core.exceptions.NotFoundException
@@ -10,17 +10,17 @@ interface DataStore {
     /**
      * Finds user by otp code & phone number
      * @param otpCode [OtpCode] passed in OTP code
-     * @param phoneNumber [MobilePhoneNumber] Mobile Phone Number
+     * @param phoneNumberOrEmail [PhoneNumberOrEmail] Mobile Phone Number
      * @return [UserOtp] User OTP entity
      */
     @Throws(NotFoundException::class, DBException::class)
-    fun getByOtpCodeAndPhoneNumber(otpCode: OtpCode, phoneNumber: MobilePhoneNumber): UserOtp?
+    fun getByOtpCodeAndPhoneNumber(otpCode: OtpCode, phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp?
 
     /**
      * Find a User Otp by phone number if exists
      */
     @Throws(NotFoundException::class, DBException::class)
-    fun getByPhoneNumber(phoneNumber: MobilePhoneNumber): UserOtp?
+    fun getByPhoneNumber(phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp?
 
     /**
      * Save generated OTP or updates an existing OTP
