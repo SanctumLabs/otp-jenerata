@@ -35,11 +35,7 @@ class OtpService(
     @Suppress("TooGenericExceptionCaught")
     fun generateOtp(userOtpDto: UserOtpDto): OtpCode? {
         return try {
-            if (isPhoneNumberValid(userOtpDto.phoneNumber)) {
-                generateOtpUseCase.execute(userOtpDto.phoneNumber)
-            } else {
-                null
-            }
+            generateOtpUseCase.execute(userOtpDto.phoneNumber)
         } catch (e: Exception) {
             null
         }
