@@ -13,7 +13,7 @@ class DataStoreImpl(private val userOtpRepository: UserOtpRepository) : DataStor
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    override fun getByOtpCodeAndPhoneNumber(otpCode: OtpCode, phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp? {
+    override fun getByOtpCodeAndPhoneNumber(otpCode: OtpCode, phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp {
         val userOtp = userOtpRepository.findUserOtpByOtpCodeAndPhoneNumber(otpCode, phoneNumberOrEmail)
             ?: throw NotFoundException("User OTP not found")
         try {
@@ -29,8 +29,9 @@ class DataStoreImpl(private val userOtpRepository: UserOtpRepository) : DataStor
         }
     }
 
-    override fun getByPhoneNumber(phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp? {
-        val userOtp = userOtpRepository.findUserOtpByPhoneNumberOrEmail(phoneNumberOrEmail) ?: throw NotFoundException("User OTP not found")
+    override fun getByPhoneNumber(phoneNumberOrEmail: PhoneNumberOrEmail): UserOtp {
+        val userOtp = userOtpRepository.findUserOtpByPhoneNumberOrEmail(phoneNumberOrEmail)
+            ?: throw NotFoundException("User OTP not found")
 
         try {
             return UserOtp(
@@ -73,7 +74,8 @@ class DataStoreImpl(private val userOtpRepository: UserOtpRepository) : DataStor
 
     override fun markOtpAsUsed(userOtp: UserOtp): Boolean {
         val existingUserOtp =
-            userOtpRepository.findUserOtpByPhoneNumberOrEmail(userOtp.phoneNumberOrEmail) ?: throw NotFoundException("User OTP not found")
+            userOtpRepository.findUserOtpByPhoneNumberOrEmail(userOtp.phoneNumberOrEmail)
+                ?: throw NotFoundException("User OTP not found")
         existingUserOtp.otpUsed = true
 
         return try {

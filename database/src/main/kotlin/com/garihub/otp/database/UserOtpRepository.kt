@@ -17,5 +17,8 @@ interface UserOtpRepository : JpaRepository<UserOtpEntity, Long> {
     ): UserOtpEntity?
 
     @Query("SELECT u FROM userOtps u WHERE u.phoneNumberOrEmail = :phoneNumberOrEmail")
-    fun findUserOtpByPhoneNumberOrEmail(@Param("phoneNumberOrEmail") phoneNumberOrEmail: PhoneNumberOrEmail): UserOtpEntity?
+    fun findUserOtpByPhoneNumberOrEmail(
+        @Param("phoneNumberOrEmail")
+        phoneNumberOrEmail: PhoneNumberOrEmail
+    ): UserOtpEntity?
 }
