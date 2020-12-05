@@ -42,7 +42,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: otp-gen-db
-                  key: url_pool
+                  key: url
 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
@@ -76,7 +76,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: otp-gen-db
-                  key: url_pools
+                  key: url
 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
