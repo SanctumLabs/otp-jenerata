@@ -1,4 +1,4 @@
-rootProject.name = "otp-geneator"
+rootProject.name = "otp-generator"
 rootProject.buildFileName = "build.gradle.kts"
 
 include(

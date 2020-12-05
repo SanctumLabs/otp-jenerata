@@ -16,7 +16,7 @@ private const val AMOUNT_TO_ADD = 180L
 private val config = TimeBasedOneTimePasswordConfig(
     codeDigits = 6,
     hmacAlgorithm = HmacAlgorithm.SHA1,
-    timeStep = 60, //duration in which otp is valid
+    timeStep = 180, //duration in which otp is valid
     timeStepUnit = TimeUnit.SECONDS
 )
 
@@ -31,7 +31,7 @@ fun generateOtp(otpKey: String, phoneNumber: String): UserOtp {
     val date = Date(epochSeconds)
     val otpCode = codeGenerator.generate(timestamp = date)
 
-    return UserOtp(otpCode = otpCode, phoneNumber = phoneNumber, expiryTime = expiryTime)
+    return UserOtp(otpCode = otpCode, phoneNumberOrEmail = phoneNumber, expiryTime = expiryTime)
 }
 
 fun verifyOtp(otpEntity: UserOtp): Boolean {

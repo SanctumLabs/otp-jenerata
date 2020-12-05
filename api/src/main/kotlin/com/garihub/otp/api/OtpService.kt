@@ -25,7 +25,7 @@ class OtpService(
         @Suppress("TooGenericExceptionCaught")
         return try {
             verifyOtpUseCase.execute(
-                UserVerifyOtp(otpCode = userVerifyOtp.otpCode, phoneNumber = userVerifyOtp.phoneNumber)
+                UserVerifyOtp(otpCode = userVerifyOtp.otpCode, phoneNumberOrEmail = userVerifyOtp.phoneNumberOrEmail)
             )
         } catch (e: Exception) {
             OtpVerificationStatus.FAILED_VERIFICATION
@@ -35,11 +35,7 @@ class OtpService(
     @Suppress("TooGenericExceptionCaught")
     fun generateOtp(userOtpDto: UserOtpDto): OtpCode? {
         return try {
-            if (isPhoneNumberValid(userOtpDto.phoneNumber)) {
-                generateOtpUseCase.execute(userOtpDto.phoneNumber)
-            } else {
-                null
-            }
+            generateOtpUseCase.execute(userOtpDto.phoneNumber)
         } catch (e: Exception) {
             null
         }

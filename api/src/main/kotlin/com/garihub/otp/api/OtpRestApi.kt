@@ -26,7 +26,7 @@ class OtpRestApi(private val otpService: OtpService) {
         return if (result != null) {
             ResponseEntity(
                 UserOtpResponseDto(
-                    phoneNumber = payload.phoneNumber,
+                    phoneNumberOrEmail = payload.phoneNumber,
                     otpCode = result
                 ),
                 HttpStatus.OK

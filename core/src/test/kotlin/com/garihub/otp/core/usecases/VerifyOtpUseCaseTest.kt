@@ -26,11 +26,11 @@ class VerifyOtpUseCaseTest {
     private val mobilePhoneNumber = "254700000000"
     private val userVerifyOtp = UserVerifyOtp(
         otpCode = otpCode,
-        phoneNumber = mobilePhoneNumber
+        phoneNumberOrEmail = mobilePhoneNumber
     )
     private val userOtp = UserOtp(
         otpCode = otpCode,
-        phoneNumber = mobilePhoneNumber,
+        phoneNumberOrEmail = mobilePhoneNumber,
         expiryTime = LocalDateTime.now()
     )
 

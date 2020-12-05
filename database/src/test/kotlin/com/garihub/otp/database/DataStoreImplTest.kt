@@ -1,10 +1,6 @@
 package com.garihub.otp.database
 
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 class DataStoreImplTest {
@@ -18,7 +14,7 @@ class DataStoreImplTest {
     private val phoneNumber = "254700000000"
 
     private val userEntity = UserOtpEntity(
-        phoneNumber = phoneNumber,
+        phoneNumberOrEmail = phoneNumber,
         otpCode = otpCode,
         expiryTime = LocalDateTime.now()
     )

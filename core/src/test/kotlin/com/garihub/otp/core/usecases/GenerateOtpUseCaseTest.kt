@@ -4,7 +4,6 @@ import com.garihub.otp.core.exceptions.OtpGenerationException
 import com.garihub.otp.core.gateways.datastore.DataStore
 import com.garihub.otp.core.models.UserOtp
 import com.garihub.otp.core.utils.generateOtp
-import com.garihub.otp.core.utils.verifyOtp
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -24,7 +23,7 @@ class GenerateOtpUseCaseTest {
 
     private val userOtp = UserOtp(
         otpCode = otpCode,
-        phoneNumber = mobilePhoneNumber,
+        phoneNumberOrEmail = mobilePhoneNumber,
         expiryTime = LocalDateTime.now()
     )
 
