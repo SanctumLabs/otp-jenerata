@@ -1,12 +1,11 @@
 plugins {
     kotlin("jvm")
-    kotlin("plugin.noarg")
-    kotlin("plugin.allopen")
 }
 
 dependencies {
-    implementation(Libs.Utils.libPhoneNumber)
-    implementation(Libs.Utils.libPhoneNumberCarrier)
-    implementation(Libs.Utils.libPhoneNumberGeocoder)
-    implementation(Libs.Utils.otpGenerator)
+    implementation(Dependencies.Utils.LibPhonenumber.core)
+    implementation(Dependencies.Utils.LibPhonenumber.carrier)
+    implementation(Dependencies.Utils.LibPhonenumber.geocoder)
+    implementation(Dependencies.Utils.otpGenerator)
+    implementation(kotlin("stdlib-jdk8"))
 }

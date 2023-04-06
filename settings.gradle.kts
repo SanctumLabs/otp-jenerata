@@ -1,10 +1,9 @@
-rootProject.name = "otp-generator"
+rootProject.name = "otp-jenereta"
 rootProject.buildFileName = "build.gradle.kts"
 
 include(
-    "app",
+    "server",
     "core",
-    "database",
+    "datastore",
     "api",
-    "migrations"
 )

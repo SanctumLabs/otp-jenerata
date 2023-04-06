@@ -5,9 +5,9 @@ services:
     image: sonarqube:8.2-community
     container_name: sonar
     ports:
-      - 9000:9000
+      - "9001:9000"
     environment:
-      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar_db
+      SONAR_JDBC_URL: jdbc:postgresql://db:5433/sonar_db
       SONAR_JDBC_USERNAME: sonar
       SONAR_JDBC_PASSWORD: sonar_pass
     volumes:
@@ -16,7 +16,7 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
 
   db:
-    image: postgres:9.6
+    image: postgres:15
     container_name: sonar-db
     restart: always
     environment:
@@ -24,7 +24,7 @@ services:
       POSTGRES_USER: sonar
       POSTGRES_DB: sonar_db
     ports:
-      - 5432:5432
+      - "5433:5432"
     volumes:
       - sonardb:/var/lib/postgresql/data
 
