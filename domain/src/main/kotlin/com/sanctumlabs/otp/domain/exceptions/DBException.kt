@@ -1,4 +1,4 @@
-package com.sanctumlabs.otp.core.exceptions
+package com.sanctumlabs.otp.domain.exceptions
 
 /**
  * Generic DB exception

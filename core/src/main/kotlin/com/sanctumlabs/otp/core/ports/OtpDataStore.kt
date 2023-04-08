@@ -1,35 +1,28 @@
 package com.sanctumlabs.otp.core.ports
 
+import com.sanctumlabs.otp.core.entities.OtpChannel
 import com.sanctumlabs.otp.core.entities.OtpCode
-import com.sanctumlabs.otp.core.entities.PhoneNumberOrEmail
-import com.sanctumlabs.otp.core.exceptions.DBException
-import com.sanctumlabs.otp.core.exceptions.NotFoundException
 
 interface OtpDataStore {
     /**
-     * Finds user by otp code & phone number
-     * @param otpCode [OtpCode] passed in OTP code
-     * @param phoneNumberOrEmail [PhoneNumberOrEmail] Mobile Phone Number
-     * @return [OtpCode] User OTP entity
+     * Find OTP code by the code by otp code & channel
+     * @param code [OtpCode] passed in OTP code
+     * @return [OtpCode] OTP entity
      */
-    @Throws(NotFoundException::class, DBException::class)
-    fun getByOtpCodeAndPhoneNumber(otpCode: OtpCode, phoneNumberOrEmail: PhoneNumberOrEmail): OtpCode?
+    fun getOtpCode(code: String): OtpCode?
 
     /**
-     * Find a User Otp by phone number if exists
+     * Finds an OtpCode by the provided channel if exists
      */
-    @Throws(NotFoundException::class, DBException::class)
-    fun getByPhoneNumber(phoneNumberOrEmail: PhoneNumberOrEmail): OtpCode?
+    fun getByChannel(otpChannel: OtpChannel): OtpCode?
 
     /**
      * Save generated OTP or updates an existing OTP
      */
-    @Throws(DBException::class)
-    fun saveOtpCode(otpCode: OtpCode): Boolean
+    fun create(otpCode: OtpCode): OtpCode
 
     /**
      * Marks OTP code as used
      */
-    @Throws(DBException::class)
-    fun markOtpAsUsed(otpCode: OtpCode): Boolean
+    fun markOtpAsUsed(otpCode: OtpCode)
 }

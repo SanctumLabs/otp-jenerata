@@ -1,9 +1,9 @@
-package com.sanctumlabs.otp.core.utils
+package com.sanctumlabs.otp.domain.utils
 
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
-import com.sanctumlabs.otp.core.exceptions.InvalidPhoneNumberException
+import com.sanctumlabs.otp.domain.exceptions.InvalidPhoneNumberException
 
 /**
  * Checks if a phone number is valid

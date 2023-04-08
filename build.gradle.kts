@@ -1,19 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val exposed_version: String by project
-val h2_version: String by project
-val prometheus_version: String by project
-
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version Versions.KotlinVersion
     id(Plugins.KtorPlugin) version Plugins.KtorPluginVersion
     id(Plugins.KotlinSerialization) version Versions.KotlinVersion
 }
 
-group = "com.sanctumlabs.otp"
+group = MetaInfo.GROUP
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
@@ -35,32 +28,34 @@ allprojects {
             }
         }
     }
+
+    dependencies {
+
+    }
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-openapi:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
+    implementation(Dependencies.Ktor.coreJvm)
+    implementation(Dependencies.Ktor.openApi)
+    implementation(Dependencies.Ktor.serializationJson)
+    implementation(Dependencies.Ktor.contentNegotiation)
+    implementation(Dependencies.Ktor.metrics)
+    implementation(Dependencies.Ktor.metricsMicrometer)
+    implementation(Dependencies.Ktor.callLogging)
+    implementation(Dependencies.Ktor.callId)
+    implementation(Dependencies.Ktor.swagger)
+    implementation(Dependencies.Ktor.sessions)
+    implementation(Dependencies.Ktor.auth)
+    implementation(Dependencies.Ktor.authJwt)
+    implementation(Dependencies.Ktor.netty)
 
-    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-    implementation("com.h2database:h2:$h2_version")
+    implementation(Dependencies.Database.Exposed.core)
+    implementation(Dependencies.Database.Exposed.jdbc)
 
-    implementation("io.ktor:ktor-server-metrics-micrometer-jvm:$ktor_version")
-    implementation("io.micrometer:micrometer-registry-prometheus:$prometheus_version")
+    implementation(Dependencies.Telemetry.micrometerRegistryPrometheus)
 
-    implementation("io.ktor:ktor-server-metrics-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-call-id-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-swagger:$ktor_version")
-    implementation("io.ktor:ktor-server-sessions-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
+    implementation(Dependencies.Utils.logbackClassic)
 
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation(Dependencies.Ktor.serverTests)
+    testImplementation(Dependencies.Test.kotlinTest)
 }

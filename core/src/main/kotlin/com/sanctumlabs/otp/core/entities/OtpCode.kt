@@ -5,12 +5,12 @@ import java.time.LocalDateTime
 /**
  * Representation of a User OTP in the platform
  * @property code [String] Generated OTP code
- * @property phoneNumberOrEmail [PhoneNumberOrEmail] User's phone number
+ * @property otpChannel [OtpChannel] Channel in which this OTP code will be sent
  * @property expiryTime [LocalDateTime] When the OTP code will expire
  */
 data class OtpCode(
     val code: String,
-    val phoneNumberOrEmail: PhoneNumberOrEmail,
+    val otpChannel: OtpChannel,
     val expiryTime: LocalDateTime,
     val otpUsed: Boolean = false
 )
