@@ -8,20 +8,20 @@ object Plugins {
     const val openApiGeneratorPlugin = "org.openapi.generator"
     const val openApiToolsGeneratorGradlePlugin = "org.openapitools:openapi-generator-gradle-plugin"
 
-    const val jacocoVersion = "0.8.5"
-    const val jacocoPlugin = "org.jacoco:org.jacoco.core:$jacocoVersion"
+    const val JacocoVersion = "0.8.5"
+    const val JacocoPlugin = "org.jacoco:org.jacoco.core:$JacocoVersion"
 
     const val dokkaPluginVersion = "0.10.1"
     const val dokkaGradlePlugin = "org.jetbrains.dokka:dokka-gradle-plugin"
     const val dokkaPlugin = "org.jetbrains.dokka"
 
-    const val detektPluginVersion = "1.9.1"
-    const val detektPlugin = "io.gitlab.arturbosch.detekt"
+    const val DetektPluginVersion = "1.9.1"
+    const val DetektPlugin = "io.gitlab.arturbosch.detekt"
 
     const val gradleBuildPluginVersion = "3.3.1"
     const val kotlinGradlePluginVersion = "1.3.70"
 
-    const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.KotlinVersion}"
+    const val KotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.KotlinVersion}"
 
     // db migrations
     const val flywayPluginVersion = "6.5.0"

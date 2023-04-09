@@ -1,6 +1,6 @@
 package com.sanctumlabs.otp.core.ports
 
-import com.sanctumlabs.otp.core.entities.OtpChannel
+import com.sanctumlabs.otp.core.entities.UserId
 import com.sanctumlabs.otp.core.entities.OtpCode
 
 interface OtpDataStore {
@@ -14,7 +14,7 @@ interface OtpDataStore {
     /**
      * Finds an OtpCode by the provided channel if exists
      */
-    fun getByChannel(otpChannel: OtpChannel): OtpCode?
+    fun getByChannel(userId: UserId): OtpCode?
 
     /**
      * Save generated OTP or updates an existing OTP

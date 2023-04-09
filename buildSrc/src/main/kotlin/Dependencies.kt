@@ -48,16 +48,33 @@ object Dependencies {
         const val otpGenerator = "dev.turingcomplete:kotlin-onetimepassword:2.4.0"
     }
 
+    object Kotlin {
+        const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.KotlinVersion}"
+    }
+
     object Test {
         const val mockK = "io.mockk:mockk:1.10.0"
-        const val jUnitJupiterEngine = "org.junit.jupiter:junit-jupiter-engine:5.0.1"
-        const val jUnitJupiterApi = "org.junit.jupiter:junit-jupiter-api:5.0.1"
-        const val spekApi = "org.jetbrains.spek:spek-api:2.0.11"
-        const val spekDslJvm = "org.spekframework.spek2:spek-dsl-jvm:2.0.11"
-        const val spekSubjectExt = "org.jetbrains.spek:spek-subject-extension:2.0.11"
-        const val spekRunnerJunit5 = "org.spekframework.spek2:spek-runner-junit5:2.0.11"
-
         const val kotlinTest = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.KotlinVersion}"
+
+        object Jupiter {
+            private const val version = "5.8.2"
+            const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
+            const val vintageEngine = "org.junit.vintage:junit-vintage-engine"
+            const val api = "org.junit.jupiter:junit-jupiter-api:$version"
+        }
+
+        object Spek {
+            private const val version = "2.0.19"
+            const val dslJvm = "org.spekframework.spek2:spek-dsl-jvm:$version"
+            const val subjectExt = "org.jetbrains.spek:spek-subject-extension:$version"
+            const val runnerJunit5 = "org.spekframework.spek2:spek-runner-junit5:$version"
+        }
+
+        object TestContainers {
+            private const val version = "1.17.5"
+            const val junitJupiter = "org.testcontainers:junit-jupiter:$version"
+            const val postgresql = "org.testcontainers:postgresql:$version"
+        }
     }
 
     object Telemetry {
