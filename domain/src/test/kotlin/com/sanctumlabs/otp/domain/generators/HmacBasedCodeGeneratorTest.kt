@@ -2,24 +2,20 @@ package com.sanctumlabs.otp.domain.generators
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
-import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class TimeBasedOtpCodeGeneratorTest {
-    private val key = "1234567"
+class HmacBasedCodeGeneratorTest {
     private val codeDigits = 6
-    private val timeStep = 180L
+    private val key = "1234567"
 
-    private val config = TimeBasedCodeGeneratorConfig(
+    private val hmacConfig = HmacCodeGeneratorConfig(
         codeDigits = codeDigits,
         hmacAlgorithm = HmacAlgorithms.SHA1,
-        timeStep = timeStep,
-        timeStepUnit = TimeUnit.SECONDS
     )
 
-    private val timeBasedOtpCodeGenerator by lazy {
-        TimeBasedOtpCodeGenerator(key, config)
+    private val hmacBasedOtpCodeGenerator by lazy {
+        HmacBasedCodeGenerator(key, hmacConfig)
     }
 
     @Test
@@ -27,11 +23,11 @@ class TimeBasedOtpCodeGeneratorTest {
         val secretOne = "secret"
         val secretTwo = "secretTwo"
         val actualOne = assertDoesNotThrow {
-            timeBasedOtpCodeGenerator.generate(secretOne)
+            hmacBasedOtpCodeGenerator.generate(secretOne)
         }
 
         val actualTwo = assertDoesNotThrow {
-            timeBasedOtpCodeGenerator.generate(secretTwo)
+            hmacBasedOtpCodeGenerator.generate(secretTwo)
         }
 
         assertNotEquals(actualOne, actualTwo)
