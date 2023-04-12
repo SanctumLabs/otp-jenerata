@@ -12,5 +12,5 @@ data class OtpCode(
     val code: String,
     val userId: UserId,
     val expiryTime: LocalDateTime,
-    val otpUsed: Boolean = false
+    val used: Boolean = false
 )

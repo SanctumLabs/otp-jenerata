@@ -5,9 +5,7 @@ import com.sanctumlabs.otp.core.entities.VerifyOtpCode
 import com.sanctumlabs.otp.core.ports.OtpDataStore
 import com.sanctumlabs.otp.core.services.VerifyOtpService
 import com.sanctumlabs.otp.domain.exceptions.NotFoundException
-import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 
 class VerifyOtpServiceImpl(private val dataStore: OtpDataStore) : VerifyOtpService {
@@ -17,13 +15,13 @@ class VerifyOtpServiceImpl(private val dataStore: OtpDataStore) : VerifyOtpServi
             ?: throw NotFoundException("User OTP Not found")
 
         return runCatching {
-            val instant: Instant = Instant.now()
-            val now = LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+            val now = LocalDateTime.now()
             val expiryDate = otpCode.expiryTime
             val isOtpValid = now.isBefore(expiryDate)
 
             if (isOtpValid) {
-                dataStore.markOtpAsUsed(otpCode)
+                val usedOtpCode = otpCode.copy(used = true)
+                dataStore.markOtpAsUsed(usedOtpCode)
                 OtpVerificationStatus.VERIFIED
             } else {
                 OtpVerificationStatus.CODE_EXPIRED
