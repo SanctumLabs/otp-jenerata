@@ -4,7 +4,12 @@ plugins {
 
 dependencies {
     implementation(project(":core"))
-    implementation(Dependencies.Utils.otpGenerator)
+
+    implementation(Dependencies.Database.postgres)
+    implementation(Dependencies.Database.Exposed.core)
+    implementation(Dependencies.Database.Exposed.jdbc)
+    implementation(Dependencies.Database.Exposed.dao)
+    implementation(Dependencies.Database.Exposed.javaTime)
 
     testRuntimeOnly(Dependencies.Kotlin.reflect)
     testImplementation(Dependencies.Test.kotlinTest)

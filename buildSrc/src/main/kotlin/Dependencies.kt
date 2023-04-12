@@ -20,7 +20,8 @@ object Dependencies {
     }
 
     object Database {
-        const val postgres = "org.postgresql:postgresql"
+        const val postgres = "org.postgresql:postgresql:42.6.0"
+
         const val liquibaseCore = "org.liquibase:liquibase-core:3.6.3"
         const val flywayCore = "org.flywaydb:flyway-core:6.5.0"
 
@@ -28,6 +29,9 @@ object Dependencies {
             private const val version = "0.41.1"
             const val core = "org.jetbrains.exposed:exposed-core:$version"
             const val jdbc = "org.jetbrains.exposed:exposed-jdbc:$version"
+            const val dao = "org.jetbrains.exposed:exposed-dao:$version"
+            const val javaTime = "org.jetbrains.exposed:exposed-java-time:$version"
+            const val kotlinTime = "org.jetbrains.exposed:exposed-kotlin-datetime:$version"
         }
     }
 

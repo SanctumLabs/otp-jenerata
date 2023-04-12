@@ -14,7 +14,7 @@ interface OtpDataStore {
     /**
      * Finds an OtpCode by the provided channel if exists
      */
-    fun getByChannel(userId: UserId): OtpCode?
+    fun getByUserId(userId: UserId): OtpCode?
 
     /**
      * Save generated OTP or updates an existing OTP
