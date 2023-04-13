@@ -12,7 +12,6 @@ class VerifyOtpServiceImpl(private val dataStore: OtpDataStore) : VerifyOtpServi
 
     override fun execute(request: VerifyOtpCode): OtpVerificationStatus {
         val otpCode = dataStore.getOtpCode(request.otpCode)
-            ?: throw NotFoundException("User OTP Not found")
 
         return runCatching {
             val now = LocalDateTime.now()

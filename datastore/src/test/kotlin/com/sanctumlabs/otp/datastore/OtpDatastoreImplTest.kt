@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 
 class OtpDatastoreImplTest {
     private val mockOtpRepository = mockk<OtpRepository>()
@@ -173,6 +174,70 @@ class OtpDatastoreImplTest {
         verifySequence {
             mockOtpRepository.findByCode(generatedCode)
             mockOtpRepository.update(any())
+        }
+
+        confirmVerified(mockOtpRepository)
+    }
+
+    @Test
+    fun `should throw NotFoundException when retrieving an OTP by code & it's non-existent`() {
+        val generatedCode = "123456"
+
+        every {
+            mockOtpRepository.findByCode(any())
+        } returns null
+
+        assertThrows<NotFoundException> {
+            otpDataStore.getOtpCode(generatedCode)
+        }
+
+        verify {
+            mockOtpRepository.findByCode(generatedCode)
+        }
+
+        confirmVerified(mockOtpRepository)
+    }
+
+    @Test
+    fun `should return OTP when retrieving it by code & it exists`() {
+        val code = "123456"
+        val userId = UserId("654321")
+        val expiryTime = LocalDateTime.now()
+        val used = false
+
+        val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
+
+        every {
+            mockOtpEntity.code
+        } returns code
+
+        every {
+            mockOtpEntity.used
+        } returns used
+
+        every {
+            mockOtpEntity.userId
+        } returns userId.value
+
+        every {
+            mockOtpEntity.expiryTime
+        } returns expiryTime
+
+        every {
+            mockOtpRepository.findByCode(any())
+        } returns mockOtpEntity
+
+        val actual = assertDoesNotThrow {
+            otpDataStore.getOtpCode(code)
+        }
+
+        assertEquals(code, actual.code)
+        assertEquals(used, actual.used)
+        assertEquals(userId, actual.userId)
+        assertEquals(expiryTime, actual.expiryTime)
+
+        verify {
+            mockOtpRepository.findByCode(code)
         }
 
         confirmVerified(mockOtpRepository)

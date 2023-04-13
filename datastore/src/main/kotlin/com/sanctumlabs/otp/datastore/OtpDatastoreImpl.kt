@@ -25,8 +25,16 @@ class OtpDatastoreImpl(private val otpRepository: OtpRepository) : OtpDataStore 
             .getOrElse { throw DatabaseException("Failed to create OTP code $otpCode", it) }
     }
 
-    override fun getOtpCode(code: String): OtpCode? {
-        TODO("Not yet implemented")
+    override fun getOtpCode(code: String): OtpCode {
+        val otpEntity =
+            otpRepository.findByCode(code) ?: throw NotFoundException("Otp $code not found")
+
+        return OtpCode(
+            code = code,
+            userId = UserId(otpEntity.userId),
+            expiryTime = otpEntity.expiryTime,
+            used = otpEntity.used
+        )
     }
 
     override fun getByUserId(userId: UserId): OtpCode? {

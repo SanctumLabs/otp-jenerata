@@ -9,7 +9,7 @@ interface OtpDataStore {
      * @param code [OtpCode] passed in OTP code
      * @return [OtpCode] OTP entity
      */
-    fun getOtpCode(code: String): OtpCode?
+    fun getOtpCode(code: String): OtpCode
 
     /**
      * Finds an OtpCode by the provided channel if exists
