@@ -26,31 +26,18 @@ class OtpDatastoreImpl(private val otpRepository: OtpRepository) : OtpDataStore 
     }
 
     override fun getOtpCode(code: String): OtpCode {
-        val otpEntity =
-            otpRepository.findByCode(code) ?: throw NotFoundException("Otp $code not found")
-
-        return OtpCode(
-            code = code,
-            userId = UserId(otpEntity.userId),
-            expiryTime = otpEntity.expiryTime,
-            used = otpEntity.used
-        )
+        val otpEntity = otpRepository.findByCode(code) ?: throw NotFoundException("Otp $code not found")
+        return mapModelToEntity(otpEntity)
     }
 
     override fun getAll(): Collection<OtpCode> = runCatching { otpRepository.findAll() }
-        .mapCatching {
-            it.map { otpEntity ->
-                OtpCode(
-                    code = otpEntity.code,
-                    userId = UserId(otpEntity.userId),
-                    expiryTime = otpEntity.expiryTime,
-                    used = otpEntity.used
-                )
-            }
-        }
+        .mapCatching { it.map(::mapModelToEntity) }
         .getOrElse { throw DatabaseException("Failed to get all OTP codes", it) }
 
-    override fun getAllByUserId(userId: UserId): Collection<OtpCode> {
-        TODO("Not yet implemented")
+    override fun getAllByUserId(userId: UserId): Collection<OtpCode> = runCatching {
+        otpRepository.findAllByUserId(userId.value)
     }
+        .mapCatching { it.map(::mapModelToEntity) }
+        .getOrElse { throw DatabaseException("Failed to get all OTP codes", it) }
+
 }

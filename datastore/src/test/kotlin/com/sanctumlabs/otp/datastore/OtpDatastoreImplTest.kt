@@ -326,4 +326,86 @@ class OtpDatastoreImplTest {
 
         confirmVerified(mockOtpRepository)
     }
+
+    @Test
+    fun `should throw exception when there is a failure retrieving all OTP codes by user ID`() {
+        val code = "123456"
+        val userId = UserId("654321")
+        val expiryTime = LocalDateTime.now()
+        val used = false
+
+        val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
+
+        every {
+            mockOtpEntity.code
+        } returns code
+
+        every {
+            mockOtpEntity.used
+        } returns used
+
+        every {
+            mockOtpEntity.userId
+        } returns userId.value
+
+        every {
+            mockOtpEntity.expiryTime
+        } returns expiryTime
+
+        every {
+            mockOtpRepository.findAllByUserId(any())
+        } throws Exception("Failed to retrieve all OTP codes")
+
+        assertThrows<DatabaseException> {
+            otpDataStore.getAllByUserId(userId)
+        }
+
+        verify {
+            mockOtpRepository.findAllByUserId(userId.value)
+        }
+
+        confirmVerified(mockOtpRepository)
+    }
+
+    @Test
+    fun `should retrieve collection of OTP codes for a user ID`() {
+        val code = "123456"
+        val userId = UserId("654321")
+        val expiryTime = LocalDateTime.now()
+        val used = false
+
+        val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
+
+        every {
+            mockOtpEntity.code
+        } returns code
+
+        every {
+            mockOtpEntity.used
+        } returns used
+
+        every {
+            mockOtpEntity.userId
+        } returns userId.value
+
+        every {
+            mockOtpEntity.expiryTime
+        } returns expiryTime
+
+        val otpCodes = listOf(mockOtpEntity)
+
+        every {
+            mockOtpRepository.findAllByUserId(any())
+        } returns otpCodes
+
+        assertDoesNotThrow {
+            otpDataStore.getAllByUserId(userId)
+        }
+
+        verify {
+            mockOtpRepository.findAllByUserId(userId.value)
+        }
+
+        confirmVerified(mockOtpRepository)
+    }
 }

@@ -1,7 +1,6 @@
 package com.sanctumlabs.otp.datastore
 
 import com.sanctumlabs.otp.core.entities.OtpCode
-import com.sanctumlabs.otp.core.entities.UserId
 import com.sanctumlabs.otp.datastore.models.OtpEntity
 import com.sanctumlabs.otp.datastore.models.OtpTable
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,8 +22,8 @@ class OtpRepository {
         transaction { OtpEntity.all().toList() }
     }
 
-    fun findAllByUserId(userId: UserId): Collection<OtpEntity> = run {
-        transaction { OtpEntity.find { OtpTable.userId eq userId.value }.toList() }
+    fun findAllByUserId(userId: String): Collection<OtpEntity> = run {
+        transaction { OtpEntity.find { OtpTable.userId eq userId }.toList() }
     }
 
     fun findByCode(code: String): OtpEntity? {
