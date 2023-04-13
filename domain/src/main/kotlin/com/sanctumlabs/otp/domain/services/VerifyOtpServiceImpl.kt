@@ -4,7 +4,7 @@ import com.sanctumlabs.otp.core.entities.OtpVerificationStatus
 import com.sanctumlabs.otp.core.entities.VerifyOtpCode
 import com.sanctumlabs.otp.core.ports.OtpDataStore
 import com.sanctumlabs.otp.core.services.VerifyOtpService
-import com.sanctumlabs.otp.domain.exceptions.NotFoundException
+import com.sanctumlabs.otp.core.exceptions.NotFoundException
 import java.time.LocalDateTime
 
 

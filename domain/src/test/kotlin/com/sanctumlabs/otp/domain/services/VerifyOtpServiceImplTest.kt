@@ -5,7 +5,7 @@ import com.sanctumlabs.otp.core.entities.OtpVerificationStatus
 import com.sanctumlabs.otp.core.entities.UserId
 import com.sanctumlabs.otp.core.entities.VerifyOtpCode
 import com.sanctumlabs.otp.core.ports.OtpDataStore
-import com.sanctumlabs.otp.domain.exceptions.NotFoundException
+import com.sanctumlabs.otp.core.exceptions.NotFoundException
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
