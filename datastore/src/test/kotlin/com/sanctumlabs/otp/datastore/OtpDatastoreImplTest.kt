@@ -242,4 +242,88 @@ class OtpDatastoreImplTest {
 
         confirmVerified(mockOtpRepository)
     }
+
+    @Test
+    fun `should return Collection of OTPs when retrieving all codes`() {
+        val code = "123456"
+        val userId = UserId("654321")
+        val expiryTime = LocalDateTime.now()
+        val used = false
+
+        val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
+
+        every {
+            mockOtpEntity.code
+        } returns code
+
+        every {
+            mockOtpEntity.used
+        } returns used
+
+        every {
+            mockOtpEntity.userId
+        } returns userId.value
+
+        every {
+            mockOtpEntity.expiryTime
+        } returns expiryTime
+
+        val otpCodes = listOf(mockOtpEntity)
+
+        every {
+            mockOtpRepository.findAll()
+        } returns otpCodes
+
+        val actual = assertDoesNotThrow {
+            otpDataStore.getAll()
+        }
+
+        assertEquals(otpCodes.size, actual.size)
+
+        verify {
+            mockOtpRepository.findAll()
+        }
+
+        confirmVerified(mockOtpRepository)
+    }
+
+    @Test
+    fun `should throw exception when there is a failure retrieving all OTP codes`() {
+        val code = "123456"
+        val userId = UserId("654321")
+        val expiryTime = LocalDateTime.now()
+        val used = false
+
+        val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
+
+        every {
+            mockOtpEntity.code
+        } returns code
+
+        every {
+            mockOtpEntity.used
+        } returns used
+
+        every {
+            mockOtpEntity.userId
+        } returns userId.value
+
+        every {
+            mockOtpEntity.expiryTime
+        } returns expiryTime
+
+        every {
+            mockOtpRepository.findAll()
+        } throws Exception("Failed to retrieve all OTP codes")
+
+        assertThrows<DatabaseException> {
+            otpDataStore.getAll()
+        }
+
+        verify {
+            mockOtpRepository.findAll()
+        }
+
+        confirmVerified(mockOtpRepository)
+    }
 }

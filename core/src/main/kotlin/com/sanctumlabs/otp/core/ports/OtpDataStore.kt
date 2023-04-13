@@ -12,9 +12,11 @@ interface OtpDataStore {
     fun getOtpCode(code: String): OtpCode
 
     /**
-     * Finds an OtpCode by the provided channel if exists
+     * Finds all OtpCode(s)
      */
-    fun getByUserId(userId: UserId): OtpCode?
+    fun getAllByUserId(userId: UserId): Collection<OtpCode>
+
+    fun getAll(): Collection<OtpCode>
 
     /**
      * Save generated OTP or updates an existing OTP

@@ -22,7 +22,7 @@ class OtpDatastoreImpl(private val otpRepository: OtpRepository) : OtpDataStore 
             otpEntity.used = otpCode.used
             otpRepository.update(otpEntity)
         }
-            .getOrElse { throw DatabaseException("Failed to create OTP code $otpCode", it) }
+            .getOrElse { throw DatabaseException("Failed to update OTP code $otpCode", it) }
     }
 
     override fun getOtpCode(code: String): OtpCode {
@@ -37,7 +37,20 @@ class OtpDatastoreImpl(private val otpRepository: OtpRepository) : OtpDataStore 
         )
     }
 
-    override fun getByUserId(userId: UserId): OtpCode? {
+    override fun getAll(): Collection<OtpCode> = runCatching { otpRepository.findAll() }
+        .mapCatching {
+            it.map { otpEntity ->
+                OtpCode(
+                    code = otpEntity.code,
+                    userId = UserId(otpEntity.userId),
+                    expiryTime = otpEntity.expiryTime,
+                    used = otpEntity.used
+                )
+            }
+        }
+        .getOrElse { throw DatabaseException("Failed to get all OTP codes", it) }
+
+    override fun getAllByUserId(userId: UserId): Collection<OtpCode> {
         TODO("Not yet implemented")
     }
 }
