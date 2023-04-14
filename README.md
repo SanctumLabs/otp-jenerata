@@ -57,7 +57,7 @@ Tests have been configured to run with [JUnit 5](https://junit.org/junit5/). Run
 ./gradlew test
 ```
 
-> This will run all unit tests under [test](./src/test/kotlin/)
+> This will run all unit tests under [test](app/src/test/kotlin/)
 
 Run a test coverage report with:
 

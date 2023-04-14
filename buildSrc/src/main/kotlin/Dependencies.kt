@@ -13,10 +13,20 @@ object Dependencies {
         const val auth = "io.ktor:ktor-server-auth-jvm:$version"
         const val authJwt = "io.ktor:ktor-server-auth-jwt-jvm:$version"
         const val netty = "io.ktor:ktor-server-netty-jvm:$version"
+        const val defaultHeaders = "io.ktor:ktor-server-default-headers:$version"
 
         const val serializationJson = "io.ktor:ktor-serialization-kotlinx-json-jvm:$version"
 
         const val serverTests = "io.ktor:ktor-server-tests-jvm:$version"
+    }
+
+    object DI {
+        private const val koinVersion = "3.4.0"
+        const val koinCore = "io.insert-koin:koin-core:$koinVersion"
+        const val koinLogger = "io.insert-koin:koin-logger-slf4j:$koinVersion"
+        const val koinKtor = "io.insert-koin:koin-ktor:$koinVersion"
+        const val koinTest = "io.insert-koin:koin-test:$koinVersion"
+        const val koinTestJunit5 = "io.insert-koin:koin-test-junit5:$koinVersion"
     }
 
     object Database {
@@ -24,6 +34,9 @@ object Dependencies {
 
         const val liquibaseCore = "org.liquibase:liquibase-core:3.6.3"
         const val flywayCore = "org.flywaydb:flyway-core:6.5.0"
+
+        // HikariCP (Connection Pooling)
+        const val hikariConnectionPooling = "com.zaxxer:HikariCP:5.0.1"
 
         object Exposed {
             private const val version = "0.41.1"
@@ -42,11 +55,7 @@ object Dependencies {
         private const val logbackVersion = "1.2.11"
         const val logbackClassic = "ch.qos.logback:logback-classic:$logbackVersion"
 
-        object LibPhonenumber {
-            const val core = "com.googlecode.libphonenumber:libphonenumber:8.12.8"
-            const val geocoder = "com.googlecode.libphonenumber:geocoder:2.108"
-            const val carrier = "com.googlecode.libphonenumber:carrier:1.99"
-        }
+        const val dotenv = "io.github.cdimascio:dotenv-kotlin:6.4.1"
 
         // Ref: https://github.com/marcelkliemannel/kotlin-onetimepassword
         const val otpGenerator = "dev.turingcomplete:kotlin-onetimepassword:2.4.0"

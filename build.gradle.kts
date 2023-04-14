@@ -13,29 +13,28 @@ buildscript {
 
     dependencies {
         classpath(Plugins.KotlinGradlePlugin)
-//        classpath(Plugins.JacocoPlugin)
+        classpath(Plugins.Jacoco.core)
     }
 }
 
 plugins {
     kotlin("jvm") version Versions.KotlinVersion
-    id(Plugins.KtorPlugin) version Plugins.KtorPluginVersion
-    id(Plugins.KotlinSerialization) version Versions.KotlinVersion
-}
-
-
-application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
-
-    val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+    id(Plugins.Detekt.plugin) version Plugins.Detekt.version
 }
 
 allprojects {
     group = MetaInfo.GROUP
 
+    apply(plugin = Plugins.Java)
+    apply(plugin = Plugins.Jacoco.plugin)
+
     repositories {
         mavenCentral()
+    }
+
+    configure<JacocoPluginExtension> {
+        toolVersion = Plugins.Jacoco.version
+        reportsDirectory.set(file("${buildDir}/reports/jacoco"))
     }
 
     tasks {
@@ -54,7 +53,6 @@ allprojects {
 }
 
 subprojects {
-
     repositories {
         mavenCentral()
     }
@@ -80,58 +78,58 @@ subprojects {
                 html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests")))
             }
 
-//            configure<JacocoTaskExtension> {
-//                isEnabled = true
-//                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
-//            }
+            configure<JacocoTaskExtension> {
+                isEnabled = true
+                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
+            }
         }
 
-//        jacocoTestReport {
-//            reports {
-//                xml.required.set(true)
-//                html.required.set(true)
-//                csv.required.set(false)
-//                html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
-//                html.outputLocation.set(
-//                    file(project.rootDir.resolve("$buildDir/reports/coverage"))
-//                )
-//            }
-//            dependsOn("test")
-//        }
+        withType<JacocoReport> {
+            reports {
+                xml.required.set(true)
+                html.required.set(true)
+                csv.required.set(false)
+                html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+                html.outputLocation.set(
+                    file(project.rootDir.resolve("$buildDir/reports/coverage"))
+                )
+            }
+            dependsOn("test")
+        }
+
+        withType<JacocoCoverageVerification> {
+            group = "test"
+            description = "Test Coverage Verification"
+            enabled = true
+            violationRules {
+                rule {
+                    limit {
+                        minimum = "0.5".toBigDecimal()
+                    }
+                }
+
+                rule {
+                    enabled = false
+                    element = "CLASS"
+                    includes = listOf("org.gradle.*")
+
+                    limit {
+                        counter = "LINE"
+                        value = "TOTALCOUNT"
+                        maximum = "0.3".toBigDecimal()
+                    }
+                }
+            }
+        }
     }
 
     dependencies {
-//        implementation(kotlin("stdlib-jdk8"))
-//        testRuntimeOnly(Dependencies.Kotlin.reflect)
-//        testImplementation(Dependencies.Test.kotlinTest)
-//        testImplementation(Dependencies.Test.mockK)
-//        testImplementation(Dependencies.Test.jUnitJupiterApi)
-//        testImplementation(Dependencies.Test.jUnitJupiterEngine)
-//        testImplementation(Dependencies.Test.spekDsl)
-//        testImplementation(Dependencies.Test.spekSubjectExt)
+        implementation(kotlin("stdlib-jdk8", Versions.KotlinVersion))
+        testRuntimeOnly(Dependencies.Kotlin.reflect)
+        testImplementation(Dependencies.Test.kotlinTest)
+        testImplementation(Dependencies.Test.mockK)
+        testImplementation(Dependencies.Test.Jupiter.api)
+        testImplementation(Dependencies.Test.Jupiter.engine)
+        testImplementation(Dependencies.Test.Spek.dslJvm)
     }
-}
-
-dependencies {
-    implementation(Dependencies.Ktor.coreJvm)
-    implementation(Dependencies.Ktor.openApi)
-    implementation(Dependencies.Ktor.serializationJson)
-    implementation(Dependencies.Ktor.contentNegotiation)
-    implementation(Dependencies.Ktor.metrics)
-    implementation(Dependencies.Ktor.metricsMicrometer)
-    implementation(Dependencies.Ktor.callLogging)
-    implementation(Dependencies.Ktor.callId)
-    implementation(Dependencies.Ktor.swagger)
-    implementation(Dependencies.Ktor.sessions)
-    implementation(Dependencies.Ktor.auth)
-    implementation(Dependencies.Ktor.authJwt)
-    implementation(Dependencies.Ktor.netty)
-
-    implementation(Dependencies.Database.Exposed.core)
-    implementation(Dependencies.Database.Exposed.jdbc)
-
-    implementation(Dependencies.Telemetry.micrometerRegistryPrometheus)
-
-    implementation(Dependencies.Utils.logbackClassic)
-    testImplementation(Dependencies.Ktor.serverTests)
 }

@@ -1,22 +1,29 @@
 object Plugins {
-    const val KtorPlugin = "io.ktor.plugin"
-    const val KtorPluginVersion = "2.2.4"
+    object Ktor {
+        const val version = "2.2.4"
+        const val plugin = "io.ktor.plugin"
+    }
 
     const val KotlinSerialization = "org.jetbrains.kotlin.plugin.serialization"
 
-    const val openApiGeneratorPluginVersion = "4.3.1"
-    const val openApiGeneratorPlugin = "org.openapi.generator"
-    const val openApiToolsGeneratorGradlePlugin = "org.openapitools:openapi-generator-gradle-plugin"
+    const val Java = "java"
 
-    const val JacocoVersion = "0.8.5"
-    const val JacocoPlugin = "org.jacoco:org.jacoco.core:$JacocoVersion"
+    object Jacoco {
+        const val version = "0.8.5"
+        const val plugin = "jacoco"
+        const val core = "org.jacoco:org.jacoco.core:$version"
+    }
 
-    const val dokkaPluginVersion = "0.10.1"
-    const val dokkaGradlePlugin = "org.jetbrains.dokka:dokka-gradle-plugin"
-    const val dokkaPlugin = "org.jetbrains.dokka"
+    object Dokka {
+        const val version = "0.10.1"
+        const val gradlePlugin = "org.jetbrains.dokka:dokka-gradle-plugin"
+        const val plugin = "org.jetbrains.dokka"
+    }
 
-    const val DetektPluginVersion = "1.9.1"
-    const val DetektPlugin = "io.gitlab.arturbosch.detekt"
+    object Detekt {
+        const val version = "1.9.1"
+        const val plugin = "io.gitlab.arturbosch.detekt"
+    }
 
     const val gradleBuildPluginVersion = "3.3.1"
     const val kotlinGradlePluginVersion = "1.3.70"
