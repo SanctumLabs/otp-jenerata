@@ -1,4 +1,4 @@
-package com.sanctumlabs
+package com.sanctumlabs.otp
 
 import com.sanctumlabs.otp.plugins.configureRouting
 import io.ktor.client.request.*
@@ -6,6 +6,7 @@ import io.ktor.client.statement.*
 import io.ktor.server.testing.*
 import kotlin.test.*
 import io.ktor.http.*
+import org.junit.jupiter.api.Test
 
 class ApplicationTest {
     @Test
@@ -13,9 +14,9 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/").apply {
+        client.get("/health").apply {
             assertEquals(HttpStatusCode.OK, status)
-            assertEquals("Hello World!", bodyAsText())
+            assertEquals("Healthy", bodyAsText())
         }
     }
 }

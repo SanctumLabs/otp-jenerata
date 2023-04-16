@@ -12,7 +12,7 @@ application {
 }
 
 dependencies {
-//    implementation(project(":api"))
+    implementation(project(":app:api"))
     implementation(project(":app:core"))
     implementation(project(":app:datastore"))
     implementation(project(":app:domain"))
@@ -20,7 +20,7 @@ dependencies {
     implementation(Dependencies.Ktor.coreJvm)
     implementation(Dependencies.Ktor.openApi)
     implementation(Dependencies.Ktor.serializationJson)
-    implementation(Dependencies.Ktor.contentNegotiation)
+    implementation(Dependencies.Ktor.serverContentNegotiation)
     implementation(Dependencies.Ktor.metrics)
     implementation(Dependencies.Ktor.metricsMicrometer)
     implementation(Dependencies.Ktor.callLogging)
@@ -39,6 +39,9 @@ dependencies {
     implementation(Dependencies.Utils.dotenv)
 
     implementation(Dependencies.Database.hikariConnectionPooling)
+    implementation(Dependencies.Database.Exposed.core)
+    implementation(Dependencies.Database.Exposed.jdbc)
+    implementation(Dependencies.Database.Exposed.dao)
 
     implementation(Dependencies.Telemetry.micrometerRegistryPrometheus)
 

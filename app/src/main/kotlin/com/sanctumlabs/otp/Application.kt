@@ -1,4 +1,4 @@
-package com.sanctumlabs
+package com.sanctumlabs.otp
 
 import com.sanctumlabs.otp.di.modules
 import com.sanctumlabs.otp.plugins.plugins

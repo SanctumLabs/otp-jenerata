@@ -3,7 +3,8 @@ object Dependencies {
         private const val version = "2.2.4"
         const val coreJvm = "io.ktor:ktor-server-core-jvm:$version"
         const val openApi = "io.ktor:ktor-server-openapi:$version"
-        const val contentNegotiation = "io.ktor:ktor-server-content-negotiation-jvm:$version"
+        const val serverContentNegotiation = "io.ktor:ktor-server-content-negotiation:$version"
+        const val clientContentNegotiation = "io.ktor:ktor-client-content-negotiation:$version"
         const val metrics = "io.ktor:ktor-server-metrics-jvm:$version"
         const val metricsMicrometer = "io.ktor:ktor-server-metrics-micrometer-jvm:$version"
         const val callLogging = "io.ktor:ktor-server-call-logging-jvm:$version"
@@ -18,6 +19,7 @@ object Dependencies {
         const val serializationJson = "io.ktor:ktor-serialization-kotlinx-json-jvm:$version"
 
         const val serverTests = "io.ktor:ktor-server-tests-jvm:$version"
+        const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
     }
 
     object DI {
