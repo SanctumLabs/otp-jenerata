@@ -18,4 +18,6 @@ dependencies {
     testImplementation(Dependencies.Ktor.serverContentNegotiation)
     testImplementation(Dependencies.Ktor.clientContentNegotiation)
     testImplementation(Dependencies.Ktor.serverTestHost)
+    testImplementation(Dependencies.DI.koinTest)
+    testImplementation(Dependencies.DI.koinTestJunit5)
 }

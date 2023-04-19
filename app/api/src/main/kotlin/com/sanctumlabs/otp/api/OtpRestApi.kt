@@ -16,34 +16,36 @@ fun Route.otpApiRoutes() {
 
     route("/api/v1/otp") {
         post<OtpRequestDto> { payload ->
-            otpService.generateOtp(payload).runCatching {
+            runCatching {
+                val otpCode = otpService.generateOtp(payload)
                 OtpResponseDto(
                     userId = payload.userId,
-                    code = code
+                    code = otpCode.code,
+                    expiryTime = otpCode.expiryTime
                 )
             }
                 .onSuccess { call.respond(message = it, status = HttpStatusCode.Created) }
                 .onFailure {
                     call.respond(
-                        message = ApiResult(message = "Failed to create OTP"),
+                        message = ApiResult(message = it.message ?: "Failed to create OTP"),
                         status = HttpStatusCode.InternalServerError
                     )
                 }
         }
 
         post<OtpVerifyDto>("/verify") { payload ->
-            otpService.verifyOtp(payload)
-                .runCatching {
-                    OtpVerifyResponseDto(
-                        userId = payload.userId,
-                        code = payload.code,
-                        status = this
-                    )
-                }
+            runCatching {
+                val status = otpService.verifyOtp(payload)
+                OtpVerifyResponseDto(
+                    userId = payload.userId,
+                    code = payload.code,
+                    status = status
+                )
+            }
                 .onSuccess { call.respond(message = it, status = HttpStatusCode.OK) }
                 .onFailure {
                     call.respond(
-                        message = ApiResult(message = "Failed to verify OTP"),
+                        message = ApiResult(message = it.message ?: "Failed to verify OTP"),
                         status = HttpStatusCode.InternalServerError
                     )
                 }
