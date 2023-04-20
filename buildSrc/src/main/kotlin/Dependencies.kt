@@ -91,7 +91,7 @@ object Dependencies {
         }
 
         object TestContainers {
-            private const val version = "1.17.5"
+            private const val version = "1.18.0"
             const val junitJupiter = "org.testcontainers:junit-jupiter:$version"
             const val postgresql = "org.testcontainers:postgresql:$version"
         }

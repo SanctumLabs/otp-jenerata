@@ -1,6 +1,7 @@
 package com.sanctumlabs.otp.datastore
 
 import com.sanctumlabs.otp.core.entities.OtpCode
+import com.sanctumlabs.otp.datastore.DatabaseFactory.dbQuery
 import com.sanctumlabs.otp.datastore.models.OtpEntity
 import com.sanctumlabs.otp.datastore.models.OtpTable
 import kotlinx.coroutines.Dispatchers
@@ -10,9 +11,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
 object OtpRepository {
-
-    private suspend fun <T> dbQuery(block: suspend () -> T): T =
-        newSuspendedTransaction(Dispatchers.IO) { block() }
 
     suspend fun insert(otpCode: OtpCode): OtpEntity = dbQuery {
         OtpEntity.new {
