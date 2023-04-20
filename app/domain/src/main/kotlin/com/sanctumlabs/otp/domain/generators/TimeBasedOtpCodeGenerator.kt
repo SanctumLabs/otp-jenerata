@@ -5,6 +5,7 @@ import com.sanctumlabs.otp.core.services.OtpCodeGenerator
 import dev.turingcomplete.kotlinonetimepassword.HmacAlgorithm
 import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordConfig
 import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordGenerator
+import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -52,7 +53,9 @@ class TimeBasedOtpCodeGenerator(private val key: String, private val config: Tim
         // number of milliseconds the current OTP is still valid
         val millisValid = endEpochMills - timestamp
 
-        val expiryTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millisValid), ZoneOffset.UTC)
+        val expiryTime = LocalDateTime
+            .ofInstant(Instant.ofEpochMilli(millisValid), ZoneOffset.UTC)
+            .toKotlinLocalDateTime()
 
         return GeneratedOtpCode(
             code = otpCode,

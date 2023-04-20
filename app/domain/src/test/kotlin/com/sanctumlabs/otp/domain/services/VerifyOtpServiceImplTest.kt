@@ -11,6 +11,7 @@ import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
+import kotlinx.datetime.toKotlinLocalDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -25,7 +26,7 @@ class VerifyOtpServiceImplTest {
     fun `should throw NotFoundException if OTP can not be found`() {
         every {
             mockDataStore.getOtpCode(any())
-        } returns null
+        } throws NotFoundException("OTP code not found")
 
         val request = VerifyOtpCode(
             otpCode = "123456",
@@ -45,7 +46,7 @@ class VerifyOtpServiceImplTest {
     fun `should return OtpVerificationStatus_VERIFIED if OTP expiry time is after now`() {
         val code = "123456"
         val userId = UserId("09876")
-        val expiryTime = LocalDateTime.now().plusMinutes(5)
+        val expiryTime = LocalDateTime.now().plusMinutes(5).toKotlinLocalDateTime()
 
         val otpCode = OtpCode(
             code = code,
@@ -84,7 +85,7 @@ class VerifyOtpServiceImplTest {
     fun `should return OtpVerificationStatus_CODE_EXPIRED if OTP expiry time is before now`() {
         val code = "123456"
         val userId = UserId("09876")
-        val expiryTime = LocalDateTime.now().minusMinutes(10)
+        val expiryTime = LocalDateTime.now().minusMinutes(10).toKotlinLocalDateTime()
 
         val otpCode = OtpCode(
             code = code,
@@ -120,7 +121,7 @@ class VerifyOtpServiceImplTest {
     fun `should return OtpVerificationStatus_FAILED_VERIFICATION if there is a failure marking otp as used`() {
         val code = "123456"
         val userId = UserId("09876")
-        val expiryTime = LocalDateTime.now().plusMinutes(10)
+        val expiryTime = LocalDateTime.now().plusMinutes(10).toKotlinLocalDateTime()
 
         val otpCode = OtpCode(
             code = code,

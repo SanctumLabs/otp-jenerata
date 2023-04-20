@@ -10,6 +10,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinLocalDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -24,7 +26,7 @@ class OtpDatastoreImplTest {
     fun `should throw exception when there is a failure to create new OTP code`() {
         val code = "123456"
         val userId = UserId("654321")
-        val expiryTime = LocalDateTime.now()
+        val expiryTime = LocalDateTime.now().toKotlinLocalDateTime()
 
         val otpCode = OtpCode(
             code = code,
@@ -51,7 +53,7 @@ class OtpDatastoreImplTest {
     fun `should return otp code on successful creation of OTP`() {
         val generatedCode = "123456"
         val otpUserId = UserId("654321")
-        val otpExpiryTime = LocalDateTime.now()
+        val otpExpiryTime = LocalDateTime.now().toKotlinLocalDateTime()
 
         val otpCode = OtpCode(
             code = generatedCode,
@@ -80,7 +82,7 @@ class OtpDatastoreImplTest {
     fun `should throw NotFoundException when marking otp code as used if it does not exist`() {
         val generatedCode = "123456"
         val otpUserId = UserId("654321")
-        val otpExpiryTime = LocalDateTime.now()
+        val otpExpiryTime = LocalDateTime.now().toKotlinLocalDateTime()
 
         val otpCode = OtpCode(
             code = generatedCode,
@@ -111,7 +113,7 @@ class OtpDatastoreImplTest {
     fun `should throw DatabaseException when there is a failure marking otp code as used`() {
         val generatedCode = "123456"
         val otpUserId = UserId("654321")
-        val otpExpiryTime = LocalDateTime.now()
+        val otpExpiryTime = LocalDateTime.now().toKotlinLocalDateTime()
         val used = true
 
         val otpCode = OtpCode(
@@ -147,7 +149,7 @@ class OtpDatastoreImplTest {
     fun `should not throw DatabaseException when there is a success marking otp code as used`() {
         val generatedCode = "123456"
         val otpUserId = UserId("654321")
-        val otpExpiryTime = LocalDateTime.now()
+        val otpExpiryTime = LocalDateTime.now().toKotlinLocalDateTime()
         val used = true
 
         val otpCode = OtpCode(
@@ -234,7 +236,7 @@ class OtpDatastoreImplTest {
         assertEquals(code, actual.code)
         assertEquals(used, actual.used)
         assertEquals(userId, actual.userId)
-        assertEquals(expiryTime, actual.expiryTime)
+        assertEquals(expiryTime, actual.expiryTime.toJavaLocalDateTime())
 
         verify {
             mockOtpRepository.findByCode(code)

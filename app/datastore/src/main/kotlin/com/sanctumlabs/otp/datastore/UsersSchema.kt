@@ -1,13 +1,11 @@
-package com.sanctumlabs.plugins
+package com.sanctumlabs.otp.datastore
 
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import kotlinx.serialization.Serializable
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 
-@Serializable
 data class User(val name: String, val age: Int)
 class UserService(private val database: Database) {
     object Users : Table() {

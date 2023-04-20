@@ -13,6 +13,8 @@ dependencies {
     implementation(Dependencies.Ktor.netty)
     implementation(Dependencies.Ktor.serializationJson)
 
+    implementation(Dependencies.Kotlin.X.datetime)
+
     implementation(Dependencies.DI.koinKtor)
 
     testImplementation(Dependencies.Ktor.serverContentNegotiation)

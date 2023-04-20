@@ -12,10 +12,12 @@ import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.assertDoesNotThrow
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -133,7 +135,7 @@ class OtpServiceTest {
 
         val code = "12345"
         val user = UserId(userId)
-        val expiryTime = LocalDateTime.now()
+        val expiryTime = LocalDateTime(LocalDate(2023, 1, 1), LocalTime(1, 1, 1))
 
         val otpCode = OtpCode(
             code = code,

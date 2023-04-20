@@ -4,6 +4,7 @@ import com.sanctumlabs.otp.core.entities.OtpCode
 import com.sanctumlabs.otp.datastore.models.OtpEntity
 import com.sanctumlabs.otp.datastore.models.OtpTable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.datetime.toJavaLocalDateTime
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -15,7 +16,7 @@ object OtpRepository {
             OtpEntity.new {
                 code = otpCode.code
                 userId = otpCode.userId.value
-                expiryTime = otpCode.expiryTime
+                expiryTime = otpCode.expiryTime.toJavaLocalDateTime()
             }
         }
     }

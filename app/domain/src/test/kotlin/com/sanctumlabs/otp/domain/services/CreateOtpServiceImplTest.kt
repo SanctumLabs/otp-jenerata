@@ -9,9 +9,11 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.time.LocalDateTime
 
 
 class CreateOtpServiceImplTest {
@@ -41,7 +43,7 @@ class CreateOtpServiceImplTest {
     fun `should throw error if there is a failure saving generated OTP code`() {
         val generatedCode = GeneratedOtpCode(
             code = "123456",
-            expiryTime = LocalDateTime.now()
+            expiryTime = LocalDateTime(LocalDate(2023, 1, 1), LocalTime(1, 1, 1))
         )
         val userId = UserId("123456")
 

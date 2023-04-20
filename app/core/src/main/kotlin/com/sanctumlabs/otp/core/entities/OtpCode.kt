@@ -1,6 +1,7 @@
 package com.sanctumlabs.otp.core.entities
 
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
+
 
 /**
  * Representation of a User OTP in the platform

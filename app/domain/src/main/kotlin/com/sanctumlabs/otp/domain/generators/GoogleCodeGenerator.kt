@@ -3,6 +3,7 @@ package com.sanctumlabs.otp.domain.generators
 import com.sanctumlabs.otp.core.services.GeneratedOtpCode
 import com.sanctumlabs.otp.core.services.OtpCodeGenerator
 import dev.turingcomplete.kotlinonetimepassword.GoogleAuthenticator
+import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
@@ -31,7 +32,7 @@ class GoogleCodeGenerator(private val key: String) : OtpCodeGenerator {
             calendar.get(Calendar.DAY_OF_MONTH),
             calendar.get(Calendar.HOUR),
             calendar.get(Calendar.MINUTE)
-        )
+        ).toKotlinLocalDateTime()
 
         return GeneratedOtpCode(
             code = otpCode,

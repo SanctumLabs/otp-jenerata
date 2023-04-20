@@ -5,6 +5,7 @@ import com.sanctumlabs.otp.core.services.OtpCodeGenerator
 import dev.turingcomplete.kotlinonetimepassword.HmacAlgorithm
 import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordConfig
 import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordGenerator
+import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.LocalDateTime
 import java.util.*
 
@@ -48,7 +49,7 @@ class HmacBasedCodeGenerator(
             calendar.get(Calendar.DAY_OF_MONTH),
             calendar.get(Calendar.HOUR),
             calendar.get(Calendar.MINUTE)
-        )
+        ).toKotlinLocalDateTime()
 
         return GeneratedOtpCode(
             code = otpCode,

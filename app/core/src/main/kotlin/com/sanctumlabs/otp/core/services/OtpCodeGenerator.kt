@@ -1,6 +1,7 @@
 package com.sanctumlabs.otp.core.services
 
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
+
 
 data class GeneratedOtpCode(
     val code: String,

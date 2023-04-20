@@ -17,13 +17,15 @@ import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
-import java.time.LocalDateTime
 
 class OtpRestApiTest : KoinTest {
     private val mockOtpService = mockk<OtpService>()
@@ -60,7 +62,7 @@ class OtpRestApiTest : KoinTest {
         val request = OtpRequestDto(userId)
 
         val code = "45468"
-        val expiryTime = LocalDateTime.now()
+        val expiryTime = LocalDateTime(LocalDate(2023, 1, 1), LocalTime(1, 1, 1))
         val used = false
         val otpCode = OtpCode(code = code, userId = UserId(userId), expiryTime = expiryTime, used = used)
 
@@ -71,7 +73,8 @@ class OtpRestApiTest : KoinTest {
         val expectedResponse = """
             {
                 "userId": "$userId",
-                "code": "$code"
+                "code": "$code",
+                "expiryTime": "$expiryTime"
             }
         """.trimIndent()
 
