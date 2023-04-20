@@ -14,9 +14,9 @@ import kotlin.test.assertEquals
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.*
 import io.mockk.confirmVerified
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -66,7 +66,7 @@ class OtpRestApiTest : KoinTest {
         val used = false
         val otpCode = OtpCode(code = code, userId = UserId(userId), expiryTime = expiryTime, used = used)
 
-        every {
+        coEvery {
             mockOtpService.generateOtp(any())
         } returns otpCode
 
@@ -87,7 +87,7 @@ class OtpRestApiTest : KoinTest {
                 assertEquals(expectedResponse, bodyAsText())
             }
 
-        verify {
+        coVerify {
             mockOtpService.generateOtp(otpRequestDto = request)
         }
 
@@ -108,7 +108,7 @@ class OtpRestApiTest : KoinTest {
         val userId = "132456"
         val request = OtpRequestDto(userId)
 
-        every {
+        coEvery {
             mockOtpService.generateOtp(any())
         } throws Exception("Failed to generated OTP code")
 
@@ -127,7 +127,7 @@ class OtpRestApiTest : KoinTest {
                 assertEquals(expectedResponse, bodyAsText())
             }
 
-        verify {
+        coVerify {
             mockOtpService.generateOtp(otpRequestDto = request)
         }
 
@@ -135,7 +135,7 @@ class OtpRestApiTest : KoinTest {
     }
 
     @Test
-    fun `should return success response when there is a success verifying OTP code`() = testApplication {
+    fun `should return success response when there is a success coVerifying OTP code`() = testApplication {
         application {
             configureRouting()
         }
@@ -150,7 +150,7 @@ class OtpRestApiTest : KoinTest {
         val request = OtpVerifyDto(userId = userId, code = code)
         val verificationStatus = OtpVerificationStatus.VERIFIED
 
-        every {
+        coEvery {
             mockOtpService.verifyOtp(any())
         } returns verificationStatus
 
@@ -171,7 +171,7 @@ class OtpRestApiTest : KoinTest {
                 assertEquals(expectedResponse, bodyAsText())
             }
 
-        verify {
+        coVerify {
             mockOtpService.verifyOtp(verifyOtpDto = request)
         }
 
@@ -179,7 +179,7 @@ class OtpRestApiTest : KoinTest {
     }
 
     @Test
-    fun `should return error response when there is a failure verifying OTP code`() = testApplication {
+    fun `should return error response when there is a failure coVerifying OTP code`() = testApplication {
         application {
             configureRouting()
         }
@@ -193,8 +193,8 @@ class OtpRestApiTest : KoinTest {
         val code = "132456"
         val request = OtpVerifyDto(userId = userId, code = code)
 
-        val errorMessage = "Failed to verify OTP code $code"
-        every {
+        val errorMessage = "Failed to coVerify OTP code $code"
+        coEvery {
             mockOtpService.verifyOtp(any())
         } throws Exception(errorMessage)
 
@@ -213,7 +213,7 @@ class OtpRestApiTest : KoinTest {
                 assertEquals(expectedResponse, bodyAsText())
             }
 
-        verify {
+        coVerify {
             mockOtpService.verifyOtp(verifyOtpDto = request)
         }
 

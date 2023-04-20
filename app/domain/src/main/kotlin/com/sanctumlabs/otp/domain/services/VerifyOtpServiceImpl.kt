@@ -13,27 +13,24 @@ import kotlinx.datetime.toLocalDateTime
 
 class VerifyOtpServiceImpl(private val dataStore: OtpDataStore) : VerifyOtpService {
 
-    override fun execute(request: VerifyOtpCode): OtpVerificationStatus {
+    override suspend fun execute(request: VerifyOtpCode): OtpVerificationStatus = runCatching {
+        val otpCode = dataStore.getOtpCode(request.otpCode)
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+        val expiryDate = otpCode.expiryTime.toJavaLocalDateTime()
+        val isOtpValid = now.isBefore(expiryDate)
 
-        return runCatching {
-            val otpCode = dataStore.getOtpCode(request.otpCode)
-            val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
-            val expiryDate = otpCode.expiryTime.toJavaLocalDateTime()
-            val isOtpValid = now.isBefore(expiryDate)
-
-            if (isOtpValid) {
-                val usedOtpCode = otpCode.copy(used = true)
-                dataStore.markOtpAsUsed(usedOtpCode)
-                OtpVerificationStatus.VERIFIED
-            } else {
-                OtpVerificationStatus.CODE_EXPIRED
+        if (isOtpValid) {
+            val usedOtpCode = otpCode.copy(used = true)
+            dataStore.markOtpAsUsed(usedOtpCode)
+            OtpVerificationStatus.VERIFIED
+        } else {
+            OtpVerificationStatus.CODE_EXPIRED
+        }
+    }
+        .getOrElse {
+            when (it) {
+                is NotFoundException -> throw it
+                else -> OtpVerificationStatus.FAILED_VERIFICATION
             }
         }
-            .getOrElse {
-                when (it) {
-                    is NotFoundException -> throw it
-                    else -> OtpVerificationStatus.FAILED_VERIFICATION
-                }
-            }
-    }
 }

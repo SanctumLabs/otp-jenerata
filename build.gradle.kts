@@ -131,5 +131,6 @@ subprojects {
         testImplementation(Dependencies.Test.Jupiter.api)
         testImplementation(Dependencies.Test.Jupiter.engine)
         testImplementation(Dependencies.Test.Spek.dslJvm)
+        testImplementation(Dependencies.Kotlin.X.coroutinesCore)
     }
 }

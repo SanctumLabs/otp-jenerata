@@ -5,10 +5,13 @@ import com.sanctumlabs.otp.core.ports.OtpDataStore
 import com.sanctumlabs.otp.core.services.GeneratedOtpCode
 import com.sanctumlabs.otp.core.services.OtpCodeGenerator
 import io.mockk.Called
+import io.mockk.coEvery
+import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifySequence
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -30,7 +33,9 @@ class CreateOtpServiceImplTest {
         } throws Exception("Failed to generate OTP code")
 
         assertThrows<CreateOtpException> {
-            createOtpService.execute(UserId("123456"))
+            runBlocking {
+                createOtpService.execute(UserId("123456"))
+            }
         }
 
         verify {
@@ -51,15 +56,17 @@ class CreateOtpServiceImplTest {
             mockOtpGenerator.generate(any())
         } returns generatedCode
 
-        every {
+        coEvery {
             mockDataStore.create(any())
         } throws Exception("Failed to save OTP code")
 
         assertThrows<Exception> {
-            createOtpService.execute(userId)
+            runBlocking {
+                createOtpService.execute(userId)
+            }
         }
 
-        verifySequence {
+        coVerifySequence {
             mockOtpGenerator.generate(userId.value)
             mockDataStore.create(any())
         }

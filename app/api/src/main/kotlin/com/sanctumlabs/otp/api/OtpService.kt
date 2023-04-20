@@ -18,7 +18,7 @@ class OtpService(
      * Verifies user OTP code
      * @return [OtpVerificationStatus]
      */
-    fun verifyOtp(verifyOtpDto: OtpVerifyDto): OtpVerificationStatus = run {
+    suspend fun verifyOtp(verifyOtpDto: OtpVerifyDto): OtpVerificationStatus = run {
         verifyOtpService.execute(
             VerifyOtpCode(
                 otpCode = verifyOtpDto.code, userId = UserId(verifyOtpDto.userId)
@@ -26,7 +26,7 @@ class OtpService(
         )
     }
 
-    fun generateOtp(otpRequestDto: OtpRequestDto): OtpCode = run {
+    suspend fun generateOtp(otpRequestDto: OtpRequestDto): OtpCode = run {
         createOtpService.execute(UserId(otpRequestDto.userId))
     }
 }

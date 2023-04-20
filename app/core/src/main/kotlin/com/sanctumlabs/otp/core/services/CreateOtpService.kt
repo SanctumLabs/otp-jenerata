@@ -8,5 +8,5 @@ import com.sanctumlabs.otp.core.interactor.UseCase
  * Generates an OTP code for given user
  */
 interface CreateOtpService : UseCase<UserId, OtpCode> {
-    override fun execute(request: UserId): OtpCode
+    override suspend fun execute(request: UserId): OtpCode
 }

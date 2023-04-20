@@ -9,9 +9,10 @@ import com.sanctumlabs.otp.core.entities.VerifyOtpCode
 import com.sanctumlabs.otp.core.services.CreateOtpService
 import com.sanctumlabs.otp.core.services.VerifyOtpService
 import io.mockk.confirmVerified
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -32,11 +33,11 @@ class OtpServiceTest {
     }
 
     @Test
-    fun `Should throw exception when there is a failure to verify OTP code`() {
+    fun `Should throw exception when there is a failure to coVerify OTP code`() {
         val otpCode = "908632"
         val userId = "254700000000"
 
-        val verifyOtpCode = VerifyOtpCode(
+        val coVerifyOtpCode = VerifyOtpCode(
             otpCode = otpCode,
             userId = UserId(userId)
         )
@@ -46,23 +47,25 @@ class OtpServiceTest {
             code = otpCode
         )
 
-        every {
+        coEvery {
             mockVerifyService.execute(any())
         } throws Exception("Failed verification")
 
         assertThrows<Exception> {
-            otpService.verifyOtp(otpVerifyDto)
+            runBlocking {
+                otpService.verifyOtp(otpVerifyDto)
+            }
         }
 
-        verify {
-            mockVerifyService.execute(verifyOtpCode)
+        coVerify {
+            mockVerifyService.execute(coVerifyOtpCode)
         }
 
         confirmVerified(mockVerifyService)
     }
 
     @Test
-    fun `Should return OTP Verification status when verify otp service succeeds`() {
+    fun `Should return OTP Verification status when coVerify otp service succeeds`() {
         val otpCode = "908632"
         val userId = "254700000000"
 
@@ -77,7 +80,7 @@ class OtpServiceTest {
 
         val expectedResponse = verificationStatusList.getRandomElement()
 
-        val verifyOtpCode = VerifyOtpCode(
+        val coVerifyOtpCode = VerifyOtpCode(
             otpCode = otpCode,
             userId = UserId(userId)
         )
@@ -87,18 +90,20 @@ class OtpServiceTest {
             code = otpCode
         )
 
-        every {
+        coEvery {
             mockVerifyService.execute(any())
         } returns expectedResponse
 
         val actual = assertDoesNotThrow {
-            otpService.verifyOtp(otpVerifyDto)
+            runBlocking {
+                otpService.verifyOtp(otpVerifyDto)
+            }
         }
 
         assertEquals(expectedResponse, actual)
 
-        verify {
-            mockVerifyService.execute(verifyOtpCode)
+        coVerify {
+            mockVerifyService.execute(coVerifyOtpCode)
         }
 
         confirmVerified(mockVerifyService)
@@ -111,15 +116,17 @@ class OtpServiceTest {
             userId = userId
         )
 
-        every {
+        coEvery {
             mockCreateOtpService.execute(any())
         } throws Exception("Some Exception")
 
         assertThrows<Exception> {
-            otpService.generateOtp(otpRequestDto)
+            runBlocking {
+                otpService.generateOtp(otpRequestDto)
+            }
         }
 
-        verify {
+        coVerify {
             mockCreateOtpService.execute(UserId(userId))
         }
 
@@ -144,17 +151,19 @@ class OtpServiceTest {
             used = false
         )
 
-        every {
+        coEvery {
             mockCreateOtpService.execute(any())
         } returns otpCode
 
         val actual = assertDoesNotThrow {
-            otpService.generateOtp(otpRequestDto)
+            runBlocking {
+                otpService.generateOtp(otpRequestDto)
+            }
         }
 
         assertEquals(otpCode, actual)
 
-        verify {
+        coVerify {
             mockCreateOtpService.execute(UserId(userId))
         }
 

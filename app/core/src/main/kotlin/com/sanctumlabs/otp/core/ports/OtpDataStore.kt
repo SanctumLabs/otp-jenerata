@@ -5,26 +5,27 @@ import com.sanctumlabs.otp.core.entities.OtpCode
 
 interface OtpDataStore {
     /**
+     * Save generated OTP or updates an existing OTP
+     */
+    suspend fun create(otpCode: OtpCode): OtpCode
+
+    /**
      * Find OTP code by the code by otp code & channel
      * @param code [OtpCode] passed in OTP code
      * @return [OtpCode] OTP entity
      */
-    fun getOtpCode(code: String): OtpCode
+    suspend fun getOtpCode(code: String): OtpCode
 
     /**
      * Finds all OtpCode(s)
      */
-    fun getAllByUserId(userId: UserId): Collection<OtpCode>
 
-    fun getAll(): Collection<OtpCode>
+    suspend fun getAllByUserId(userId: UserId): Collection<OtpCode>
 
-    /**
-     * Save generated OTP or updates an existing OTP
-     */
-    fun create(otpCode: OtpCode): OtpCode
+    suspend fun getAll(): Collection<OtpCode>
 
     /**
      * Marks OTP code as used
      */
-    fun markOtpAsUsed(otpCode: OtpCode)
+    suspend fun markOtpAsUsed(otpCode: OtpCode)
 }

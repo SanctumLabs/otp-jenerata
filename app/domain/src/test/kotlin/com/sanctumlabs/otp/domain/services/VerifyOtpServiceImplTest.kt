@@ -6,11 +6,15 @@ import com.sanctumlabs.otp.core.entities.UserId
 import com.sanctumlabs.otp.core.entities.VerifyOtpCode
 import com.sanctumlabs.otp.core.ports.OtpDataStore
 import com.sanctumlabs.otp.core.exceptions.NotFoundException
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.justRun
 import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifySequence
+import io.mockk.coVerify
+import io.mockk.coVerifySequence
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.toKotlinLocalDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -20,11 +24,11 @@ import kotlin.test.assertEquals
 
 class VerifyOtpServiceImplTest {
     private val mockDataStore = mockk<OtpDataStore>()
-    private val verifyOtpService = VerifyOtpServiceImpl(mockDataStore)
+    private val coVerifyOtpService = VerifyOtpServiceImpl(mockDataStore)
 
     @Test
     fun `should throw NotFoundException if OTP can not be found`() {
-        every {
+        coEvery {
             mockDataStore.getOtpCode(any())
         } throws NotFoundException("OTP code not found")
 
@@ -34,10 +38,12 @@ class VerifyOtpServiceImplTest {
         )
 
         assertThrows<NotFoundException> {
-            verifyOtpService.execute(request)
+            runBlocking {
+                coVerifyOtpService.execute(request)
+            }
         }
 
-        verify {
+        coVerify {
             mockDataStore.getOtpCode(request.otpCode)
         }
     }
@@ -56,11 +62,11 @@ class VerifyOtpServiceImplTest {
 
         val updatedOtpCode = otpCode.copy(used = true)
 
-        every {
+        coEvery {
             mockDataStore.getOtpCode(any())
         } returns otpCode
 
-        justRun {
+        coJustRun {
             mockDataStore.markOtpAsUsed(any())
         }
 
@@ -70,12 +76,14 @@ class VerifyOtpServiceImplTest {
         )
 
         val actual = assertDoesNotThrow {
-            verifyOtpService.execute(request)
+            runBlocking {
+                coVerifyOtpService.execute(request)
+            }
         }
 
         assertEquals(OtpVerificationStatus.VERIFIED, actual)
 
-        verify {
+        coVerify {
             mockDataStore.getOtpCode(request.otpCode)
             mockDataStore.markOtpAsUsed(updatedOtpCode)
         }
@@ -93,7 +101,7 @@ class VerifyOtpServiceImplTest {
             expiryTime = expiryTime
         )
 
-        every {
+        coEvery {
             mockDataStore.getOtpCode(any())
         } returns otpCode
 
@@ -103,16 +111,18 @@ class VerifyOtpServiceImplTest {
         )
 
         val actual = assertDoesNotThrow {
-            verifyOtpService.execute(request)
+            runBlocking {
+                coVerifyOtpService.execute(request)
+            }
         }
 
         assertEquals(OtpVerificationStatus.CODE_EXPIRED, actual)
 
-        verify {
+        coVerify {
             mockDataStore.getOtpCode(request.otpCode)
         }
 
-        verify(exactly = 0) {
+        coVerify(exactly = 0) {
             mockDataStore.markOtpAsUsed(any())
         }
     }
@@ -130,11 +140,11 @@ class VerifyOtpServiceImplTest {
         )
         val updatedOtpCode = otpCode.copy(used = true)
 
-        every {
+        coEvery {
             mockDataStore.getOtpCode(any())
         } returns otpCode
 
-        every {
+        coEvery {
             mockDataStore.markOtpAsUsed(any())
         } throws Exception("Failed to mark OTP as used")
 
@@ -144,12 +154,14 @@ class VerifyOtpServiceImplTest {
         )
 
         val actual = assertDoesNotThrow {
-            verifyOtpService.execute(request)
+            runBlocking {
+                coVerifyOtpService.execute(request)
+            }
         }
 
         assertEquals(OtpVerificationStatus.FAILED_VERIFICATION, actual)
 
-        verifySequence {
+        coVerifySequence {
             mockDataStore.getOtpCode(request.otpCode)
             mockDataStore.markOtpAsUsed(updatedOtpCode)
         }

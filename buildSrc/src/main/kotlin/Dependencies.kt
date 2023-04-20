@@ -66,6 +66,7 @@ object Dependencies {
     object Kotlin {
         object X {
             const val datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
+            const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC"
         }
 
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.KotlinVersion}"

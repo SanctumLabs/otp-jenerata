@@ -11,35 +11,33 @@ import org.jetbrains.exposed.sql.update
 
 object OtpRepository {
 
-    fun insert(otpCode: OtpCode): OtpEntity = run {
-        transaction {
-            OtpEntity.new {
-                code = otpCode.code
-                userId = otpCode.userId.value
-                expiryTime = otpCode.expiryTime.toJavaLocalDateTime()
-            }
+    private suspend fun <T> dbQuery(block: suspend () -> T): T =
+        newSuspendedTransaction(Dispatchers.IO) { block() }
+
+    suspend fun insert(otpCode: OtpCode): OtpEntity = dbQuery {
+        OtpEntity.new {
+            code = otpCode.code
+            userId = otpCode.userId.value
+            expiryTime = otpCode.expiryTime.toJavaLocalDateTime()
         }
     }
 
-    fun findAll(): Collection<OtpEntity> = run {
+    suspend fun findAll(): Collection<OtpEntity> = dbQuery {
         transaction { OtpEntity.all().toList() }
     }
 
-    fun findAllByUserId(userId: String): Collection<OtpEntity> = run {
+    suspend fun findAllByUserId(userId: String): Collection<OtpEntity> = dbQuery {
         transaction { OtpEntity.find { OtpTable.userId eq userId }.toList() }
     }
 
-    fun findByCode(code: String): OtpEntity? {
-        return OtpEntity.find {
+    suspend fun findByCode(code: String): OtpEntity? = dbQuery {
+        OtpEntity.find {
             OtpTable.code eq code
         }
             .firstOrNull()
     }
 
-    private suspend fun <T> dbQuery(block: suspend () -> T): T =
-        newSuspendedTransaction(Dispatchers.IO) { block() }
-
-    fun update(otpEntity: OtpEntity) = run {
+    suspend fun update(otpEntity: OtpEntity) = dbQuery {
         transaction {
             OtpTable.update({ OtpTable.code eq otpEntity.code }) {
                 it[used] = otpEntity.used

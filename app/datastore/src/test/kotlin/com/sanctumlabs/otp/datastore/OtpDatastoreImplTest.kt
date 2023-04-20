@@ -5,11 +5,14 @@ import com.sanctumlabs.otp.core.entities.UserId
 import com.sanctumlabs.otp.core.exceptions.DatabaseException
 import com.sanctumlabs.otp.core.exceptions.NotFoundException
 import com.sanctumlabs.otp.datastore.models.OtpEntity
+import io.mockk.coEvery
 import io.mockk.confirmVerified
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifySequence
+import io.mockk.coVerify
+import io.mockk.coVerifySequence
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 import org.junit.jupiter.api.Test
@@ -34,15 +37,17 @@ class OtpDatastoreImplTest {
             expiryTime = expiryTime
         )
 
-        every {
+        coEvery {
             mockOtpRepository.insert(any())
         } throws Exception("failed to insert record")
 
         assertThrows<DatabaseException> {
-            otpDataStore.create(otpCode)
+            runBlocking {
+                otpDataStore.create(otpCode)
+            }
         }
 
-        verify {
+        coVerify {
             mockOtpRepository.insert(otpCode)
         }
 
@@ -63,15 +68,17 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpRepository.insert(any())
         } returns mockOtpEntity
 
         assertDoesNotThrow {
-            otpDataStore.create(otpCode)
+            runBlocking {
+                otpDataStore.create(otpCode)
+            }
         }
 
-        verify {
+        coVerify {
             mockOtpRepository.insert(otpCode)
         }
 
@@ -90,19 +97,21 @@ class OtpDatastoreImplTest {
             expiryTime = otpExpiryTime
         )
 
-        every {
+        coEvery {
             mockOtpRepository.findByCode(any())
         } returns null
 
         assertThrows<NotFoundException> {
-            otpDataStore.markOtpAsUsed(otpCode)
+            runBlocking {
+                otpDataStore.markOtpAsUsed(otpCode)
+            }
         }
 
-        verify {
+        coVerify {
             mockOtpRepository.findByCode(generatedCode)
         }
 
-        verify(exactly = 0) {
+        coVerify(exactly = 0) {
             mockOtpRepository.update(any())
         }
 
@@ -125,19 +134,21 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpRepository.findByCode(any())
         } returns mockOtpEntity
 
-        every {
+        coEvery {
             mockOtpRepository.update(mockOtpEntity)
         } throws Exception("Failed to update otp")
 
         assertThrows<DatabaseException> {
-            otpDataStore.markOtpAsUsed(otpCode)
+            runBlocking {
+                otpDataStore.markOtpAsUsed(otpCode)
+            }
         }
 
-        verifySequence {
+        coVerifySequence {
             mockOtpRepository.findByCode(generatedCode)
             mockOtpRepository.update(any())
         }
@@ -161,19 +172,21 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpRepository.findByCode(any())
         } returns mockOtpEntity
 
-        every {
+        coEvery {
             mockOtpRepository.update(mockOtpEntity)
         } returns 1
 
         assertDoesNotThrow {
-            otpDataStore.markOtpAsUsed(otpCode)
+            runBlocking {
+                otpDataStore.markOtpAsUsed(otpCode)
+            }
         }
 
-        verifySequence {
+        coVerifySequence {
             mockOtpRepository.findByCode(generatedCode)
             mockOtpRepository.update(any())
         }
@@ -185,15 +198,17 @@ class OtpDatastoreImplTest {
     fun `should throw NotFoundException when retrieving an OTP by code & it's non-existent`() {
         val generatedCode = "123456"
 
-        every {
+        coEvery {
             mockOtpRepository.findByCode(any())
         } returns null
 
         assertThrows<NotFoundException> {
-            otpDataStore.getOtpCode(generatedCode)
+            runBlocking {
+                otpDataStore.getOtpCode(generatedCode)
+            }
         }
 
-        verify {
+        coVerify {
             mockOtpRepository.findByCode(generatedCode)
         }
 
@@ -209,28 +224,30 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpEntity.code
         } returns code
 
-        every {
+        coEvery {
             mockOtpEntity.used
         } returns used
 
-        every {
+        coEvery {
             mockOtpEntity.userId
         } returns userId.value
 
-        every {
+        coEvery {
             mockOtpEntity.expiryTime
         } returns expiryTime
 
-        every {
+        coEvery {
             mockOtpRepository.findByCode(any())
         } returns mockOtpEntity
 
         val actual = assertDoesNotThrow {
-            otpDataStore.getOtpCode(code)
+            runBlocking {
+                otpDataStore.getOtpCode(code)
+            }
         }
 
         assertEquals(code, actual.code)
@@ -238,7 +255,7 @@ class OtpDatastoreImplTest {
         assertEquals(userId, actual.userId)
         assertEquals(expiryTime, actual.expiryTime.toJavaLocalDateTime())
 
-        verify {
+        coVerify {
             mockOtpRepository.findByCode(code)
         }
 
@@ -254,35 +271,37 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpEntity.code
         } returns code
 
-        every {
+        coEvery {
             mockOtpEntity.used
         } returns used
 
-        every {
+        coEvery {
             mockOtpEntity.userId
         } returns userId.value
 
-        every {
+        coEvery {
             mockOtpEntity.expiryTime
         } returns expiryTime
 
         val otpCodes = listOf(mockOtpEntity)
 
-        every {
+        coEvery {
             mockOtpRepository.findAll()
         } returns otpCodes
 
         val actual = assertDoesNotThrow {
-            otpDataStore.getAll()
+            runBlocking {
+                otpDataStore.getAll()
+            }
         }
 
         assertEquals(otpCodes.size, actual.size)
 
-        verify {
+        coVerify {
             mockOtpRepository.findAll()
         }
 
@@ -298,31 +317,33 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpEntity.code
         } returns code
 
-        every {
+        coEvery {
             mockOtpEntity.used
         } returns used
 
-        every {
+        coEvery {
             mockOtpEntity.userId
         } returns userId.value
 
-        every {
+        coEvery {
             mockOtpEntity.expiryTime
         } returns expiryTime
 
-        every {
+        coEvery {
             mockOtpRepository.findAll()
         } throws Exception("Failed to retrieve all OTP codes")
 
         assertThrows<DatabaseException> {
-            otpDataStore.getAll()
+            runBlocking {
+                otpDataStore.getAll()
+            }
         }
 
-        verify {
+        coVerify {
             mockOtpRepository.findAll()
         }
 
@@ -338,31 +359,33 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpEntity.code
         } returns code
 
-        every {
+        coEvery {
             mockOtpEntity.used
         } returns used
 
-        every {
+        coEvery {
             mockOtpEntity.userId
         } returns userId.value
 
-        every {
+        coEvery {
             mockOtpEntity.expiryTime
         } returns expiryTime
 
-        every {
+        coEvery {
             mockOtpRepository.findAllByUserId(any())
         } throws Exception("Failed to retrieve all OTP codes")
 
         assertThrows<DatabaseException> {
-            otpDataStore.getAllByUserId(userId)
+            runBlocking {
+                otpDataStore.getAllByUserId(userId)
+            }
         }
 
-        verify {
+        coVerify {
             mockOtpRepository.findAllByUserId(userId.value)
         }
 
@@ -378,33 +401,35 @@ class OtpDatastoreImplTest {
 
         val mockOtpEntity = mockk<OtpEntity>(relaxed = true)
 
-        every {
+        coEvery {
             mockOtpEntity.code
         } returns code
 
-        every {
+        coEvery {
             mockOtpEntity.used
         } returns used
 
-        every {
+        coEvery {
             mockOtpEntity.userId
         } returns userId.value
 
-        every {
+        coEvery {
             mockOtpEntity.expiryTime
         } returns expiryTime
 
         val otpCodes = listOf(mockOtpEntity)
 
-        every {
+        coEvery {
             mockOtpRepository.findAllByUserId(any())
         } returns otpCodes
 
         assertDoesNotThrow {
-            otpDataStore.getAllByUserId(userId)
+            runBlocking {
+                otpDataStore.getAllByUserId(userId)
+            }
         }
 
-        verify {
+        coVerify {
             mockOtpRepository.findAllByUserId(userId.value)
         }
 

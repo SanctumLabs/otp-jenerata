@@ -5,5 +5,5 @@ import com.sanctumlabs.otp.core.entities.VerifyOtpCode
 import com.sanctumlabs.otp.core.interactor.UseCase
 
 interface VerifyOtpService : UseCase<VerifyOtpCode, OtpVerificationStatus> {
-    override fun execute(request: VerifyOtpCode): OtpVerificationStatus
+    override suspend fun execute(request: VerifyOtpCode): OtpVerificationStatus
 }
