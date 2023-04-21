@@ -25,6 +25,7 @@ object Dependencies {
     object DI {
         private const val koinVersion = "3.4.0"
         const val koinCore = "io.insert-koin:koin-core:$koinVersion"
+        const val koinCoreCoroutines = "io.insert-koin:koin-core-coroutines:$koinVersion"
         const val koinLogger = "io.insert-koin:koin-logger-slf4j:$koinVersion"
         const val koinKtor = "io.insert-koin:koin-ktor:$koinVersion"
         const val koinTest = "io.insert-koin:koin-test:$koinVersion"

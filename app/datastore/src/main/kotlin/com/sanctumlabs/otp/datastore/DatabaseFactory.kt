@@ -11,11 +11,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import javax.sql.DataSource
 
 object DatabaseFactory {
-    fun init(config: DatabaseParams) {
+    fun init(config: DatabaseParams): Database {
         val database = Database.connect(
             createDataSource(
                 dbUrl = config.url,
-                user = config.userName,
+                user = config.username,
                 dbPassword = config.password,
                 driverName = config.driverClass
             )
@@ -23,12 +23,14 @@ object DatabaseFactory {
 
         transaction(database) {
             if (config.cleanDB) {
-                SchemaUtils.drop()
+                SchemaUtils.drop(OtpTable)
                 SchemaUtils.create(OtpTable)
             } else {
                 SchemaUtils.create(OtpTable)
             }
         }
+
+        return database
     }
 
     private fun createDataSource(

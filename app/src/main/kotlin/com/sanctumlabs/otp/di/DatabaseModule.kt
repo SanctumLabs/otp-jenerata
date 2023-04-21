@@ -39,7 +39,7 @@ val databaseModule = module {
             driver = databaseConfig.driver,
             url = databaseConfig.url,
             driverClass = databaseConfig.driverClass,
-            userName = databaseConfig.userName,
+            username = databaseConfig.userName,
             password = databaseConfig.password
         )
     )

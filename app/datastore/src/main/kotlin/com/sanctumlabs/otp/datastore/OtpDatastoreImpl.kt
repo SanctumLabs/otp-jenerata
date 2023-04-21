@@ -15,14 +15,10 @@ class OtpDatastoreImpl(private val otpRepository: OtpRepository) : OtpDataStore 
         .getOrElse { throw DatabaseException("Failed to create OTP code $otpCode", it) }
 
     override suspend fun markOtpAsUsed(otpCode: OtpCode) {
-        val otpEntity =
-            otpRepository.findByCode(otpCode.code) ?: throw NotFoundException("Otp ${otpCode.code} not found")
+        otpRepository.findByCode(otpCode.code) ?: throw NotFoundException("Otp ${otpCode.code} not found")
 
-        runCatching {
-            otpEntity.used = otpCode.used
-            otpRepository.update(otpEntity)
-        }
-            .getOrElse { throw DatabaseException("Failed to update OTP code $otpCode", it) }
+        runCatching { otpRepository.markAsUsed(otpCode.code) }
+            .getOrElse { throw DatabaseException("Failed to mark OTP $otpCode as used", it) }
     }
 
     override suspend fun getOtpCode(code: String): OtpCode {

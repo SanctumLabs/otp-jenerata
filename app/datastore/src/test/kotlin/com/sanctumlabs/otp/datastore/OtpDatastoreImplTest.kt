@@ -7,20 +7,20 @@ import com.sanctumlabs.otp.core.exceptions.NotFoundException
 import com.sanctumlabs.otp.datastore.models.OtpEntity
 import io.mockk.coEvery
 import io.mockk.confirmVerified
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.coVerify
 import io.mockk.coVerifySequence
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 
+@Tag("unit")
 class OtpDatastoreImplTest {
     private val mockOtpRepository = mockk<OtpRepository>()
     private val otpDataStore = OtpDatastoreImpl(mockOtpRepository)
@@ -112,7 +112,7 @@ class OtpDatastoreImplTest {
         }
 
         coVerify(exactly = 0) {
-            mockOtpRepository.update(any())
+            mockOtpRepository.markAsUsed(any())
         }
 
         confirmVerified(mockOtpRepository)
@@ -139,7 +139,7 @@ class OtpDatastoreImplTest {
         } returns mockOtpEntity
 
         coEvery {
-            mockOtpRepository.update(mockOtpEntity)
+            mockOtpRepository.markAsUsed(generatedCode)
         } throws Exception("Failed to update otp")
 
         assertThrows<DatabaseException> {
@@ -150,7 +150,7 @@ class OtpDatastoreImplTest {
 
         coVerifySequence {
             mockOtpRepository.findByCode(generatedCode)
-            mockOtpRepository.update(any())
+            mockOtpRepository.markAsUsed(generatedCode)
         }
 
         confirmVerified(mockOtpRepository)
@@ -177,7 +177,7 @@ class OtpDatastoreImplTest {
         } returns mockOtpEntity
 
         coEvery {
-            mockOtpRepository.update(mockOtpEntity)
+            mockOtpRepository.markAsUsed(any())
         } returns 1
 
         assertDoesNotThrow {
@@ -188,7 +188,7 @@ class OtpDatastoreImplTest {
 
         coVerifySequence {
             mockOtpRepository.findByCode(generatedCode)
-            mockOtpRepository.update(any())
+            mockOtpRepository.markAsUsed(generatedCode)
         }
 
         confirmVerified(mockOtpRepository)

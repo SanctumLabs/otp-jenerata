@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_PASSWORD: otp-pass
       POSTGRES_USER: otp
-      POSTGRES_DB: otp
+      POSTGRES_DB: otpdb
     ports:
       - "5432:5432"
     volumes:

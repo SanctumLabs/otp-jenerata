@@ -15,4 +15,8 @@ dependencies {
     implementation(Dependencies.Kotlin.X.datetime)
     testImplementation(Dependencies.Test.TestContainers.junitJupiter)
     testImplementation(Dependencies.Test.TestContainers.postgresql)
+
+    testImplementation(Dependencies.DI.koinCore)
+    testImplementation(Dependencies.DI.koinTest)
+    testImplementation(Dependencies.DI.koinTestJunit5)
 }

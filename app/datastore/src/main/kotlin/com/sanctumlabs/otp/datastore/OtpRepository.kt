@@ -17,6 +17,7 @@ object OtpRepository {
             code = otpCode.code
             userId = otpCode.userId.value
             expiryTime = otpCode.expiryTime.toJavaLocalDateTime()
+            used = otpCode.used
         }
     }
 
@@ -36,12 +37,16 @@ object OtpRepository {
     }
 
     suspend fun update(otpEntity: OtpEntity) = dbQuery {
-        transaction {
-            OtpTable.update({ OtpTable.code eq otpEntity.code }) {
-                it[used] = otpEntity.used
-                it[userId] = otpEntity.userId
-                it[expiryTime] = otpEntity.expiryTime
-            }
+        OtpTable.update({ OtpTable.code eq otpEntity.code }) {
+            it[used] = otpEntity.used
+            it[userId] = otpEntity.userId
+            it[expiryTime] = otpEntity.expiryTime
+        }
+    }
+
+    suspend fun markAsUsed(code: String) = dbQuery {
+        OtpTable.update({ OtpTable.code eq code }) {
+            it[used] = true
         }
     }
 }

@@ -4,7 +4,7 @@ data class DatabaseParams(
     val driver: String,
     val url: String,
     val driverClass: String,
-    val userName: String,
+    val username: String,
     val password: String,
     val cleanDB: Boolean = false,
 )
