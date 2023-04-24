@@ -17,6 +17,8 @@ dependencies {
     implementation(project(":app:datastore"))
     implementation(project(":app:domain"))
 
+    implementation(Dependencies.Kotlin.X.datetime)
+
     implementation(Dependencies.Ktor.coreJvm)
     implementation(Dependencies.Ktor.openApi)
     implementation(Dependencies.Ktor.serializationJson)
@@ -44,8 +46,10 @@ dependencies {
     implementation(Dependencies.Database.Exposed.dao)
 
     implementation(Dependencies.Telemetry.micrometerRegistryPrometheus)
-
     implementation(Dependencies.Utils.logbackClassic)
-    testImplementation(Dependencies.Ktor.serverTests)
-}
 
+    testImplementation(testFixtures(project(":libs:testfixtures")))
+    testImplementation(Dependencies.Ktor.serverTests)
+    testImplementation(Dependencies.DI.koinTest)
+    testImplementation(Dependencies.DI.koinTestJunit5)
+}
