@@ -6,5 +6,6 @@ include(
     "app:api",
     "app:core",
     "app:domain",
-    "app:datastore"
+    "app:datastore",
+    "libs:testfixtures"
 )

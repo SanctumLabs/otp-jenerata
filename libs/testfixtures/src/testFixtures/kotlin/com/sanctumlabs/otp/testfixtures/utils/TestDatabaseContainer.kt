@@ -1,4 +1,4 @@
-package com.sanctumlabs.otp.datastore.utils
+package com.sanctumlabs.otp.testfixtures.utils
 
 import org.testcontainers.containers.PostgreSQLContainer
 

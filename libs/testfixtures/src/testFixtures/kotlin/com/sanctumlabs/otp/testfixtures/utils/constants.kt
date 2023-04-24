@@ -1,4 +1,4 @@
-package com.sanctumlabs.otp.datastore.utils
+package com.sanctumlabs.otp.testfixtures.utils
 
 const val POSTGRESQL_VERSION = "postgres:15"
 const val POSTGRESQL_DATABASE_PORT = 5432
