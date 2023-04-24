@@ -4,11 +4,15 @@ import com.sanctumlabs.otp.core.entities.OtpCode
 import com.sanctumlabs.otp.core.entities.UserId
 import com.sanctumlabs.otp.core.exceptions.DatabaseException
 import com.sanctumlabs.otp.core.exceptions.NotFoundException
-import com.sanctumlabs.otp.datastore.extensions.DatabaseExtension
+import com.sanctumlabs.otp.testfixtures.extensions.DatabaseExtension
 import com.sanctumlabs.otp.datastore.models.OtpEntity
 import com.sanctumlabs.otp.datastore.models.OtpTable
-import com.sanctumlabs.otp.datastore.utils.TestDatabase
-import com.sanctumlabs.otp.datastore.utils.generateRandomString
+import com.sanctumlabs.otp.testfixtures.utils.DATABASE_DRIVER
+import com.sanctumlabs.otp.testfixtures.utils.DATABASE_DRIVER_CLASS
+import com.sanctumlabs.otp.testfixtures.utils.DATABASE_PASSWORD
+import com.sanctumlabs.otp.testfixtures.utils.DATABASE_URL
+import com.sanctumlabs.otp.testfixtures.utils.DATABASE_USERNAME
+import com.sanctumlabs.otp.testfixtures.utils.generateRandomString
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
@@ -43,7 +47,15 @@ class OtpDatastoreIntegrationTest : KoinTest {
 
     @BeforeEach
     fun setup() {
-        database = TestDatabase.init()
+        database = DatabaseFactory.init(
+            DatabaseParams(
+                driver = DATABASE_DRIVER,
+                url = DATABASE_URL,
+                driverClass = DATABASE_DRIVER_CLASS,
+                username = DATABASE_USERNAME,
+                password = DATABASE_PASSWORD
+            )
+        )
     }
 
     @AfterEach

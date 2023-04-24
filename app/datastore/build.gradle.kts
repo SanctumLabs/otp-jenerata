@@ -13,9 +13,8 @@ dependencies {
     implementation(Dependencies.Database.Exposed.javaTime)
 
     implementation(Dependencies.Kotlin.X.datetime)
-    testImplementation(Dependencies.Test.TestContainers.junitJupiter)
-    testImplementation(Dependencies.Test.TestContainers.postgresql)
 
+    testImplementation(testFixtures(project(":libs:testfixtures")))
     testImplementation(Dependencies.DI.koinCore)
     testImplementation(Dependencies.DI.koinTest)
     testImplementation(Dependencies.DI.koinTestJunit5)
