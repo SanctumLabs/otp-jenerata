@@ -8,14 +8,21 @@ import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordGenerato
 import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
 
+/**
+ * Configuration for TimeBased Code generator configuration
+ * @param codeDigits [Int] number of digits to use for the OTP code
+ * @param hmacAlgorithm  [HmacAlgorithms] HMAC algorithm to use
+ * @param timeStep [Long] Duration in which OTP is valid
+ * @param timeStepUnit [TimeUnit] Time Unit for the [timeStep]
+ */
 data class TimeBasedCodeGeneratorConfig(
     val codeDigits: Int,
     val hmacAlgorithm: HmacAlgorithms = HmacAlgorithms.SHA1,
-    val timeStep: Long, //duration in which otp is valid
+    val timeStep: Long,
     val timeStepUnit: TimeUnit = TimeUnit.SECONDS
 )
 
@@ -48,13 +55,15 @@ class TimeBasedOtpCodeGenerator(private val key: String, private val config: Tim
         val counter = generator.counter()
 
         // the start of next time slot minus 1ms
+        val startEpochMills = generator.timeslotStart(counter)
         val endEpochMills = generator.timeslotStart(counter + 1) - 1
 
         // number of milliseconds the current OTP is still valid
-        val millisValid = endEpochMills - timestamp
+        val millisValid = endEpochMills - startEpochMills
 
+        val endTimeSlot = currentTime.plusMillis(millisValid)
         val expiryTime = LocalDateTime
-            .ofInstant(Instant.ofEpochMilli(millisValid), ZoneOffset.UTC)
+            .ofInstant(endTimeSlot, ZoneId.systemDefault())
             .toKotlinLocalDateTime()
 
         return GeneratedOtpCode(
