@@ -8,6 +8,6 @@ fun Application.plugins() {
     configureSerializationPlugin()
     configureLoggingPlugin(environment)
     configureMonitoringPlugin()
-    configureSecurity()
+    configureSecurity(environment)
     configureRouting()
 }

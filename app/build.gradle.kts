@@ -50,6 +50,8 @@ dependencies {
 
     testImplementation(testFixtures(project(":libs:testfixtures")))
     testImplementation(Dependencies.Ktor.serverTests)
+    testImplementation(Dependencies.Ktor.serverContentNegotiation)
+    testImplementation(Dependencies.Ktor.clientContentNegotiation)
     testImplementation(Dependencies.DI.koinTest)
     testImplementation(Dependencies.DI.koinTestJunit5)
 }

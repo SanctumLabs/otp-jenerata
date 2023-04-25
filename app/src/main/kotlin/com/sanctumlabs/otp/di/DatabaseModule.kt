@@ -11,25 +11,37 @@ import org.koin.core.component.inject
 import org.koin.dsl.module
 
 interface DatabaseConfig {
-    val driver: String
-    val url: String
-    val driverClass: String
-    val userName: String
+    val host: String
+    val port: Int
+    val name: String
+    val username: String
     val password: String
+    val driver: String
+    val driverClass: String
+    val url: String
 }
 
 class DatabaseConfigImpl : DatabaseConfig, KoinComponent {
 
     private val config: Config by inject()
+    override val host: String
+        get() = config.getPropertyOrThrow("database.host")
+    override val port: Int
+        get() = config.getPropertyOrThrow("database.port").toInt()
+    override val name: String
+        get() = config.getPropertyOrThrow("database.name")
 
-    override val url = "jdbc:${config.getPropertyOrThrow("database.driver")}://" +
-            config.getPropertyOrThrow("database.host") + ":" +
-            config.getPropertyOrThrow("database.port") + "/" +
-            config.getPropertyOrThrow("database.name")
-    override val driverClass = config.getPropertyOrThrow("database.driverClass")
-    override val driver = config.getPropertyOrThrow("database.driver")
-    override val userName = config.getPropertyOrThrow("database.username")
-    override val password = config.getPropertyOrThrow("database.password")
+    override val username: String = config.getPropertyOrThrow("database.username")
+    override val password: String = config.getPropertyOrThrow("database.password")
+    override val driver: String = config.getPropertyOrThrow("database.driver")
+    override val driverClass: String = config.getPropertyOrThrow("database.driverClass")
+
+    override val url = config.getProperty(
+        "database.url", "jdbc:${config.getPropertyOrThrow("database.driver")}://" +
+                config.getPropertyOrThrow("database.host") + ":" +
+                config.getPropertyOrThrow("database.port") + "/" +
+                config.getPropertyOrThrow("database.name")
+    )
 }
 
 val databaseModule = module {
@@ -39,7 +51,7 @@ val databaseModule = module {
             driver = databaseConfig.driver,
             url = databaseConfig.url,
             driverClass = databaseConfig.driverClass,
-            username = databaseConfig.userName,
+            username = databaseConfig.username,
             password = databaseConfig.password
         )
     )

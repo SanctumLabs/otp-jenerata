@@ -9,7 +9,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
-fun Application.configureSecurity() {
+fun Application.configureSecurity(environment: ApplicationEnvironment) {
     data class Session(val count: Int = 0)
 
     install(Sessions) {
@@ -20,13 +20,16 @@ fun Application.configureSecurity() {
 
     authentication {
         jwt {
-            val jwtAudience = this@configureSecurity.environment.config.property("jwt.audience").getString()
-            realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
+            val jwtAudience = environment.config.property("jwt.audience").getString()
+            val jwtDomain = environment.config.property("jwt.domain").getString()
+            val jwtSecret = environment.config.property("jwt.secret").getString()
+            val algorithm = Algorithm.HMAC256(jwtSecret)
+            realm = environment.config.property("jwt.realm").getString()
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256("secret"))
+                    .require(algorithm)
                     .withAudience(jwtAudience)
-                    .withIssuer(this@configureSecurity.environment.config.property("jwt.domain").getString())
+                    .withIssuer(jwtDomain)
                     .build()
             )
             validate { credential ->
