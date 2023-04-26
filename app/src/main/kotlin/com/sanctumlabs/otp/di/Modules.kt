@@ -7,7 +7,8 @@ import org.koin.core.context.startKoin
 fun modules(environment: ApplicationEnvironment) {
     startKoin {
         modules(
-            appModule(environment)
+            configModule,
+            appModule(environment),
         )
     }
 

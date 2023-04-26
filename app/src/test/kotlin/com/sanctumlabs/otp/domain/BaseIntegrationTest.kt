@@ -21,7 +21,7 @@ open class BaseIntegrationTest {
     private lateinit var database: Database
 
     @BeforeEach
-    fun setup() {
+    open fun setup() {
         database = DatabaseFactory.init(
             DatabaseParams(
                 driver = DATABASE_DRIVER,
