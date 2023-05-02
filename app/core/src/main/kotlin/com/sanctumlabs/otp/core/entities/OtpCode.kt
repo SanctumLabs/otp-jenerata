@@ -2,7 +2,6 @@ package com.sanctumlabs.otp.core.entities
 
 import kotlinx.datetime.LocalDateTime
 
-
 /**
  * Representation of a User OTP in the platform
  * @property code [String] Generated OTP code

@@ -21,18 +21,11 @@ object Plugins {
     }
 
     object Detekt {
-        const val version = "1.9.1"
+        const val version = "1.22.0"
         const val plugin = "io.gitlab.arturbosch.detekt"
     }
 
-    const val gradleBuildPluginVersion = "3.3.1"
-    const val kotlinGradlePluginVersion = "1.3.70"
-
     const val KotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.KotlinVersion}"
-
-    // db migrations
-    const val flywayPluginVersion = "6.5.0"
-    const val flywayDbPlugin = "org.flywaydb.flyway"
 
     const val sonarQubePluginVersion = "3.0"
     const val sonarQubePlugin = "org.sonarqube"

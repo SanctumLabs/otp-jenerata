@@ -1,6 +1,5 @@
 package com.sanctumlabs.otp.utils
 
-import io.ktor.server.config.*
 import com.sanctumlabs.otp.testfixtures.utils.DATABASE_DRIVER
 import com.sanctumlabs.otp.testfixtures.utils.DATABASE_DRIVER_CLASS
 import com.sanctumlabs.otp.testfixtures.utils.DATABASE_NAME
@@ -8,6 +7,7 @@ import com.sanctumlabs.otp.testfixtures.utils.DATABASE_PASSWORD
 import com.sanctumlabs.otp.testfixtures.utils.DATABASE_URL
 import com.sanctumlabs.otp.testfixtures.utils.DATABASE_USERNAME
 import com.sanctumlabs.otp.testfixtures.utils.POSTGRESQL_DATABASE_PORT
+import io.ktor.server.config.MapApplicationConfig
 
 internal val testAppConfig = MapApplicationConfig(
     "ktor.environment" to "test",

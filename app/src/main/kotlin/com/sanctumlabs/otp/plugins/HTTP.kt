@@ -1,11 +1,11 @@
 package com.sanctumlabs.otp.plugins
 
-import io.ktor.server.plugins.openapi.*
-import io.ktor.server.routing.*
-import io.ktor.server.plugins.swagger.*
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
 
-// TODO: setup open api plugin
+// import io.ktor.server.plugins.openapi.*
+// import io.ktor.server.routing.*
+// import io.ktor.server.plugins.swagger.*
+
 // Ref: https://ktor.io/docs/openapi.html#configure-swagger
 fun Application.configureHTTP() {
 //    routing {

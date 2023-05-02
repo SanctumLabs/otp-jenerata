@@ -11,7 +11,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Configuration for TimeBased Code generator configuration
  * @param codeDigits [Int] number of digits to use for the OTP code
@@ -43,7 +42,7 @@ class TimeBasedOtpCodeGenerator(private val key: String, private val config: Tim
             timeStepUnit = timeStepUnit
         )
 
-        val secret = "${key}{$value}"
+        val secret = "$key{$value}"
         val encodedSecret = secret.toByteArray()
 
         val generator = TimeBasedOneTimePasswordGenerator(secret = encodedSecret, config = timeConfig)

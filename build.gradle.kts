@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -27,6 +28,7 @@ allprojects {
 
     apply(plugin = Plugins.Java)
     apply(plugin = Plugins.Jacoco.plugin)
+    apply(plugin = Plugins.Detekt.plugin)
 
     repositories {
         mavenCentral()
@@ -121,10 +123,24 @@ subprojects {
                 }
             }
         }
+
+        withType<Detekt> {
+            group = "linting"
+            description = "linting task"
+            exclude("**/resources/**", "**/build/**")
+            autoCorrect = true
+            config.setFrom(files("$rootDir/conf/linting/detekt/detekt.yml"))
+            reports {
+                html {
+                    required.set(true)
+                }
+            }
+        }
     }
 
     dependencies {
         implementation(kotlin("stdlib-jdk8", Versions.KotlinVersion))
+        detektPlugins(Dependencies.Utils.detektFormatting)
         testRuntimeOnly(Dependencies.Kotlin.reflect)
         testImplementation(Dependencies.Test.kotlinTest)
         testImplementation(Dependencies.Test.mockK)

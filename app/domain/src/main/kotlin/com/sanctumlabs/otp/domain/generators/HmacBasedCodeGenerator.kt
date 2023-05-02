@@ -18,7 +18,8 @@ data class HmacCodeGeneratorConfig(
 )
 
 class HmacBasedCodeGenerator(
-    private val key: String, private val config: HmacCodeGeneratorConfig
+    private val key: String,
+    private val config: HmacCodeGeneratorConfig
 ) : OtpCodeGenerator {
 
     override fun generate(value: String): GeneratedOtpCode {
@@ -31,7 +32,7 @@ class HmacBasedCodeGenerator(
             },
         )
 
-        val secret = "${key}{$value}"
+        val secret = "$key{$value}"
         val encodedSecret = secret.toByteArray()
 
         val generator = HmacOneTimePasswordGenerator(secret = encodedSecret, config = hmacConfig)

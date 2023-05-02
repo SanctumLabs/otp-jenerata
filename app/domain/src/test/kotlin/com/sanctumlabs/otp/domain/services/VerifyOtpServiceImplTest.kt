@@ -8,11 +8,8 @@ import com.sanctumlabs.otp.core.ports.OtpDataStore
 import com.sanctumlabs.otp.core.exceptions.NotFoundException
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.coEvery
 import io.mockk.coJustRun
-import io.mockk.justRun
 import io.mockk.mockk
-import io.mockk.coVerify
 import io.mockk.coVerifySequence
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -166,5 +163,4 @@ class VerifyOtpServiceImplTest {
             mockDataStore.markOtpAsUsed(updatedOtpCode)
         }
     }
-
 }

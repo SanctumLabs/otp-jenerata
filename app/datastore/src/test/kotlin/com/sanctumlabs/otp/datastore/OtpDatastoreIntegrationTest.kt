@@ -339,7 +339,5 @@ class OtpDatastoreIntegrationTest : KoinTest {
         assertEquals(actualOtpCode2.used, used2)
         assertEquals(actualOtpCode2.userId, userId2)
         assertEquals(actualOtpCode2.expiryTime, expiryTime2)
-
     }
-
 }

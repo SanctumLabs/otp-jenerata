@@ -2,7 +2,7 @@ package com.sanctumlabs.otp
 
 import com.sanctumlabs.otp.di.modules
 import com.sanctumlabs.otp.plugins.plugins
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
 import io.ktor.server.netty.EngineMain
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)

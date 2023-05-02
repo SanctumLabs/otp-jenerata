@@ -1,6 +1,6 @@
 package com.sanctumlabs.otp.di
 
-import io.ktor.server.application.*
+import io.ktor.server.application.ApplicationEnvironment
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 

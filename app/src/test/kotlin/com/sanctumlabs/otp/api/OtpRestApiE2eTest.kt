@@ -19,26 +19,23 @@ import com.sanctumlabs.otp.plugins.configureRouting
 import com.sanctumlabs.otp.plugins.configureSerializationPlugin
 import com.sanctumlabs.otp.testfixtures.utils.generateRandomString
 import com.sanctumlabs.otp.utils.testAppConfig
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.call.body
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.config.*
-import io.ktor.server.testing.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import kotlinx.coroutines.runBlocking
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.testing.testApplication
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.test.KoinTest
@@ -104,6 +101,7 @@ class OtpRestApiE2eTest : BaseIntegrationTest(), KoinTest {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun `should be able to verify an OTP record for a user ID`() = testApplication {
         environment {
             config = testAppConfig

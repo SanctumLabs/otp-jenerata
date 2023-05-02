@@ -62,6 +62,9 @@ object Dependencies {
 
         // Ref: https://github.com/marcelkliemannel/kotlin-onetimepassword
         const val otpGenerator = "dev.turingcomplete:kotlin-onetimepassword:2.4.0"
+
+        // detekt
+        const val detektFormatting = "io.gitlab.arturbosch.detekt:detekt-formatting:${Plugins.Detekt.version}"
     }
 
     object Kotlin {

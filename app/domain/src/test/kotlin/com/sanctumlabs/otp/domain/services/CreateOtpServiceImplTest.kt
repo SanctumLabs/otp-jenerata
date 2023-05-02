@@ -10,14 +10,12 @@ import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifySequence
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-
 
 class CreateOtpServiceImplTest {
     private val mockDataStore = mockk<OtpDataStore>()

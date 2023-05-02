@@ -1,4 +1,4 @@
-rootProject.name = "OTP Jenereta"
+rootProject.name = "otp-jenereta"
 rootProject.buildFileName = "build.gradle.kts"
 
 include(

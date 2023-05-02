@@ -5,10 +5,12 @@ import com.sanctumlabs.otp.api.dto.OtpRequestDto
 import com.sanctumlabs.otp.api.dto.OtpResponseDto
 import com.sanctumlabs.otp.api.dto.OtpVerifyDto
 import com.sanctumlabs.otp.api.dto.OtpVerifyResponseDto
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 import org.koin.ktor.ext.inject
 
 fun Route.otpApiRoutes() {

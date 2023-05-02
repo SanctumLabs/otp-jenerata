@@ -1,6 +1,6 @@
 package com.sanctumlabs.otp.plugins
 
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
 
 fun Application.plugins() {
     configureHTTP()

@@ -35,5 +35,4 @@ class OtpDatastoreImpl(private val otpRepository: OtpRepository) : OtpDataStore 
     }
         .mapCatching { it.map(::mapModelToEntity) }
         .getOrElse { throw DatabaseException("Failed to get all OTP codes", it) }
-
 }

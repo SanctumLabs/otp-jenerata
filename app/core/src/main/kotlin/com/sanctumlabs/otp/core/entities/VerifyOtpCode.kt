@@ -1,6 +1,5 @@
 package com.sanctumlabs.otp.core.entities
 
-
 /**
  * Representation of a User Verification OTP
  * @property otpCode [OtpCode] Passed in OTP code
