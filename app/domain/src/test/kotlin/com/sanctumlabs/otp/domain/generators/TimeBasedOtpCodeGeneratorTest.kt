@@ -1,11 +1,13 @@
 package com.sanctumlabs.otp.domain.generators
 
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
+@Tag("unit")
 class TimeBasedOtpCodeGeneratorTest {
     private val key = "1234567"
     private val codeDigits = 6

@@ -1,10 +1,12 @@
 package com.sanctumlabs.otp.domain.generators
 
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
+@Tag("unit")
 class HmacBasedCodeGeneratorTest {
     private val codeDigits = 6
     private val key = "1234567"

@@ -19,6 +19,8 @@ buildscript {
 }
 
 plugins {
+    githooks
+    id(Plugins.JvmTestSuite)
     kotlin("jvm") version Versions.KotlinVersion
     id(Plugins.Detekt.plugin) version Plugins.Detekt.version
 }
@@ -29,6 +31,7 @@ allprojects {
     apply(plugin = Plugins.Java)
     apply(plugin = Plugins.Jacoco.plugin)
     apply(plugin = Plugins.Detekt.plugin)
+    apply(plugin = Plugins.JvmTestSuite)
 
     repositories {
         mavenCentral()
@@ -61,7 +64,10 @@ subprojects {
 
     tasks {
         withType<Test> {
-            useJUnitPlatform()
+            group = "tests"
+            useJUnitPlatform {
+                includeTags("integration", "unit", "e2e")
+            }
             testLogging {
                 // set options for log level LIFECYCLE
                 events = setOf(
@@ -78,6 +84,96 @@ subprojects {
             reports {
                 html.required.set(true)
                 html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests")))
+            }
+
+            configure<JacocoTaskExtension> {
+                isEnabled = true
+                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
+            }
+        }
+
+        register<Test>("unittests") {
+            group = "tests"
+            useJUnitPlatform {
+                includeTags("unit")
+            }
+
+            testLogging {
+                // set options for log level LIFECYCLE
+                events = setOf(
+                    TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED
+                )
+                exceptionFormat = TestExceptionFormat.FULL
+                showExceptions = true
+                showCauses = true
+                showStackTraces = true
+            }
+
+            reports {
+                html.required.set(true)
+                html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests/unit")))
+            }
+
+            configure<JacocoTaskExtension> {
+                isEnabled = true
+                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
+            }
+        }
+
+        register<Test>("integrationtests") {
+            group = "tests"
+            useJUnitPlatform {
+                includeTags("integration")
+            }
+
+            testLogging {
+                // set options for log level LIFECYCLE
+                events = setOf(
+                    TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED
+                )
+                exceptionFormat = TestExceptionFormat.FULL
+                showExceptions = true
+                showCauses = true
+                showStackTraces = true
+            }
+
+            reports {
+                html.required.set(true)
+                html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests/integration")))
+            }
+
+            configure<JacocoTaskExtension> {
+                isEnabled = true
+                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
+            }
+        }
+
+        register<Test>("e2e") {
+            group = "tests"
+            useJUnitPlatform {
+                includeTags("e2e")
+            }
+
+            testLogging {
+                // set options for log level LIFECYCLE
+                events = setOf(
+                    TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED
+                )
+                exceptionFormat = TestExceptionFormat.FULL
+                showExceptions = true
+                showCauses = true
+                showStackTraces = true
+            }
+
+            reports {
+                html.required.set(true)
+                html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests/e2e")))
             }
 
             configure<JacocoTaskExtension> {

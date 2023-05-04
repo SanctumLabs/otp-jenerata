@@ -1,4 +1,7 @@
 object Plugins {
+
+    const val JvmTestSuite = "jvm-test-suite"
+
     object Ktor {
         const val version = "2.2.4"
         const val plugin = "io.ktor.plugin"

@@ -1,0 +1,57 @@
+name: Danger CI
+
+on:
+  pull_request:
+    branches:
+      - 'develop'
+      - 'main'
+
+jobs:
+  test:
+    name: Danger CI
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        node-version: [ 16.x ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      # Ref: https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Ref: https://github.com/actions/setup-node
+      - name: Use NodeJS ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Get yarn cache directory path
+        id: cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      # Ref: https://github.com/actions/cache
+      - uses: actions/cache@v3
+        id: cache # use this to check for `cache-hit` (`steps.cache.outputs.cache-hit != 'true'`)
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: Danger CI Check
+        uses: danger/danger-js@9.1.8
+        env:
+          CI: true
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GH_TOKEN }}

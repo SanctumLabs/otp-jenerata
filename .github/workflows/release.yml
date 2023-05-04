@@ -1,0 +1,21 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      # Ref: https://github.com/actions/checkout
+      -   name: Checkout
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+
+      -   name: Release
+          run: npx semantic-release
+          env:
+            GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}

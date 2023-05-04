@@ -1,9 +1,11 @@
 package com.sanctumlabs.otp.domain.generators
 
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotEquals
 
+@Tag("unit")
 class GoogleCodeGeneratorTest {
     private val key = "1234567"
     private val googleCodeGenerator by lazy {

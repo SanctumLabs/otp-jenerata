@@ -14,9 +14,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
+@Tag("unit")
 class CreateOtpServiceImplTest {
     private val mockDataStore = mockk<OtpDataStore>()
     private val mockOtpGenerator = mockk<OtpCodeGenerator>()

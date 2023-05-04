@@ -25,11 +25,13 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Tag
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 
+@Tag("unit")
 class OtpRestApiTest : KoinTest {
     private val mockOtpService = mockk<OtpService>()
 

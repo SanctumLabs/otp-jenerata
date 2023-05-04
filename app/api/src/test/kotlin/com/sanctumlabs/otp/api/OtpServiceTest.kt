@@ -16,12 +16,14 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.assertDoesNotThrow
 import java.util.*
 import kotlin.test.assertEquals
 
+@Tag("unit")
 class OtpServiceTest {
     private val mockCreateOtpService = mockk<CreateOtpService>()
     private val mockVerifyService = mockk<VerifyOtpService>()
