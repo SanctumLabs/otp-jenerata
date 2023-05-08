@@ -5,6 +5,7 @@ import com.sanctumlabs.otp.api.dto.OtpRequestDto
 import com.sanctumlabs.otp.api.dto.OtpResponseDto
 import com.sanctumlabs.otp.api.dto.OtpVerifyDto
 import com.sanctumlabs.otp.api.dto.OtpVerifyResponseDto
+import com.sanctumlabs.otp.core.exceptions.NotFoundException
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
@@ -46,9 +47,14 @@ fun Route.otpApiRoutes() {
             }
                 .onSuccess { call.respond(message = it, status = HttpStatusCode.OK) }
                 .onFailure {
+                    val status = when (it) {
+                        is NotFoundException -> HttpStatusCode.NotFound
+                        else -> HttpStatusCode.InternalServerError
+                    }
+
                     call.respond(
                         message = ApiResult(message = it.message ?: "Failed to verify OTP"),
-                        status = HttpStatusCode.InternalServerError
+                        status = status
                     )
                 }
         }

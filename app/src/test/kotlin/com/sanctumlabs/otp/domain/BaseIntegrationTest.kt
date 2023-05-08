@@ -34,7 +34,7 @@ open class BaseIntegrationTest {
     }
 
     @AfterEach
-    fun teardown() {
+    open fun teardown() {
         transaction(database) {
             SchemaUtils.drop(OtpTable)
         }
