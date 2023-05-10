@@ -1,7 +1,6 @@
 plugins {
     kotlin("jvm") version Versions.KotlinVersion
     id(Plugins.KotlinSerialization) version Versions.KotlinVersion
-    id(Plugins.Ktor.plugin) version Plugins.Ktor.version
 }
 
 dependencies {
