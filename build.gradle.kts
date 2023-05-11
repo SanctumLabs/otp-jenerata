@@ -101,7 +101,7 @@ allprojects {
                     }
                 }
 
-                finalizedBy("jacocoTestReport")
+                finalizedBy("jacocoTestReport", "jacocoTestCoverageVerification")
             }
 
         withType<Test> {
