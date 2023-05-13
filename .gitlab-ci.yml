@@ -27,7 +27,7 @@ cache:
   paths:
     - .gradle
 
-lint_code:
+lint:
   stage: lint
   script: ./gradlew detekt
 
