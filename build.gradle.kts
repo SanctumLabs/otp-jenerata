@@ -141,6 +141,9 @@ allprojects {
 
             reports {
                 xml.required.set(true)
+                xml.outputLocation.set(
+                    file(project.rootDir.resolve("$buildDir/reports/coverage/coverage-${project.name}.xml"))
+                )
                 html.required.set(true)
                 csv.required.set(false)
                 html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
