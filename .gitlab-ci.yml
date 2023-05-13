@@ -35,10 +35,59 @@ hadolint:
   variables:
     DOCKERFILES: "./Dockerfile"
 
-test:
+unittest:
   stage: test
+  needs:
+    - lint
   script:
-    - ./gradlew test
+    - ./gradlew unittest
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - .gradle
+
+integrationtest:
+  stage: test
+  needs:
+    - lint
+  variables:
+    # Instruct Testcontainers to use the daemon of DinD.
+    DOCKER_HOST: "tcp://docker:2375"
+    # Instruct Docker not to start over TLS.
+    DOCKER_TLS_CERTDIR: ""
+    # Improve performance with overlayfs.
+    DOCKER_DRIVER: overlay2
+  services:
+    - name: docker:dind
+      # explicitly disable tls to avoid docker startup interruption
+      command: [ "--tls=false" ]
+  script:
+    - ./gradlew integrationtest
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - .gradle
+
+e2e:
+  stage: test
+  needs:
+    - lint
+  variables:
+    # Instruct Testcontainers to use the daemon of DinD.
+    DOCKER_HOST: "tcp://docker:2375"
+    # Instruct Docker not to start over TLS.
+    DOCKER_TLS_CERTDIR: ""
+    # Improve performance with overlayfs.
+    DOCKER_DRIVER: overlay2
+  services:
+    - name: docker:dind
+      # explicitly disable tls to avoid docker startup interruption
+      command: [ "--tls=false" ]
+  script:
+    - docker compose up -d
+    - ./gradlew e2e
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
@@ -47,11 +96,15 @@ test:
 
 build:
   stage: build
-  script: ./gradlew build -x test
+  needs:
+    - unittest
+    - integrationtest
+    - e2e
   artifacts:
     paths:
-      - build/libs
+      - app/build/libs
     expire_in: 1 week
+  script: ./gradlew build -x test -x copyGitHooks -x installGitHooks -x detekt -x detektMain --no-daemon
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
