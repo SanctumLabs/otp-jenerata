@@ -5,7 +5,7 @@
 [![Release](https://github.com/SanctumLabs/otp-jenerata/actions/workflows/release.yml/badge.svg)](https://github.com/SanctumLabs/otp-jenerata/actions/workflows/release.yml)
 [![Test](https://github.com/SanctumLabs/otp-jenerata/actions/workflows/test.yml/badge.svg)](https://github.com/SanctumLabs/otp-jenerata/actions/workflows/test.yml)
 [![License](https://img.shields.io/github/license/sanctumlabs/otp-jenerata)](https://github.com/sanctumlabs/otp-jenerata/blob/main/.github/LICENSE)
-[![Version](https://img.shields.io/github/v/release/SanctumLabs/otp-jenereta?color=%235351FB&label=version)](https://github.com/SanctumLabs/otp-jenerata/releases)
+[![Version](https://img.shields.io/github/v/release/sanctumlabs/otp-jenereta?color=%235351FB&label=version)](https://github.com/sanctumlabs/otp-jenerata/releases)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/084c8c187fb3410bbf8987e3e99e5922)](https://app.codacy.com/gh/SanctumLabs/otp-jenerata/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Kotlin Version](https://img.shields.io/badge/Kotlin-1.8.21-blue.svg)](https://kotlinlang.org)
 

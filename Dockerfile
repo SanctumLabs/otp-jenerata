@@ -27,7 +27,7 @@ COPY build.gradle.kts gradle.properties settings.gradle.kts gradle ./
 COPY app app
 
 # Execute the build
-RUN gradle buildFatJar --stacktrace -x test -x detekt -Pversion=$Version --no-daemon
+RUN gradle :app:buildFatJar --stacktrace -x test -x detekt -Pversion=$Version --no-daemon
 
 FROM openjdk:11
 

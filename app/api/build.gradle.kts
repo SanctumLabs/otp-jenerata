@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version Versions.KotlinVersion
-    id(Plugins.KotlinSerialization) version Versions.KotlinVersion
+    kotlin("jvm")
+    id(Plugins.KotlinSerialization)
 }
 
 dependencies {
