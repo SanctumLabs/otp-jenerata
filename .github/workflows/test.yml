@@ -42,8 +42,9 @@ jobs:
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
-        files: ./app/api/build/reports/coverage/coverage-api.xml,./app/core/build/reports/coverage/coverage-core.xml,./app/datastore/build/reports/coverage/coverage-datastore.xml,./app/domain/build/reports/coverage/coverage-domain.xml
-        flags: unittests
+        with:
+          files: ./app/api/build/reports/coverage/coverage-api.xml,./app/core/build/reports/coverage/coverage-core.xml,./app/datastore/build/reports/coverage/coverage-datastore.xml,./app/domain/build/reports/coverage/coverage-domain.xml
+          flags: unittests
 
   integration-test:
     name: Integration Tests
