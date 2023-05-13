@@ -34,13 +34,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Build
-        run: ./gradlew build
+        run: ./gradlew build -x test -x copyGitHooks -x installGitHooks -x detekt -x detektMain --no-daemon
 
       - name: Upload App Build
         uses: actions/upload-artifact@v2
         with:
           name: app-build
-          path: build/libs/dig-all.jar
+          path: app/build/libs/app-all.jar
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.

@@ -54,137 +54,96 @@ allprojects {
             sourceCompatibility = "${JavaVersion.VERSION_11}"
             targetCompatibility = "${JavaVersion.VERSION_11}"
         }
-    }
-}
 
-subprojects {
-    repositories {
-        mavenCentral()
-    }
+        withType<Detekt> {
+            group = "linting"
+            description = "linting task"
+            exclude("**/resources/**", "**/build/**")
+            autoCorrect = true
+            config.setFrom(files("$rootDir/conf/linting/detekt/detekt.yml"))
+            reports {
+                html {
+                    required.set(true)
+                }
+            }
+        }
 
-    tasks {
+        withType(Test::class)
+            .matching {
+                it.name in listOf("unittests", "integrationtests", "e2e")
+            }
+            .configureEach {
+                val testTypeName = this.name
+
+                testLogging {
+                    // set options for log level LIFECYCLE
+                    events = setOf(
+                        TestLogEvent.FAILED,
+                        TestLogEvent.PASSED,
+                        TestLogEvent.SKIPPED
+                    )
+                    exceptionFormat = TestExceptionFormat.FULL
+                    showExceptions = true
+                    showCauses = true
+                    showStackTraces = true
+                }
+
+                reports {
+                    html.required.set(true)
+                    html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests/$testTypeName")))
+                }
+
+                configure<JacocoTaskExtension> {
+                    isEnabled = true
+                    classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
+                    reports {
+                        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+                    }
+                }
+
+                finalizedBy("jacocoTestReport", "jacocoTestCoverageVerification")
+            }
+
         withType<Test> {
             group = "tests"
+
             useJUnitPlatform {
                 includeTags("integration", "unit", "e2e")
-            }
-            testLogging {
-                // set options for log level LIFECYCLE
-                events = setOf(
-                    TestLogEvent.FAILED,
-                    TestLogEvent.PASSED,
-                    TestLogEvent.SKIPPED
-                )
-                exceptionFormat = TestExceptionFormat.FULL
-                showExceptions = true
-                showCauses = true
-                showStackTraces = true
-            }
-
-            reports {
-                html.required.set(true)
-                html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests")))
-            }
-
-            configure<JacocoTaskExtension> {
-                isEnabled = true
-                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
             }
         }
 
         register<Test>("unittests") {
             group = "tests"
+
             useJUnitPlatform {
                 includeTags("unit")
-            }
-
-            testLogging {
-                // set options for log level LIFECYCLE
-                events = setOf(
-                    TestLogEvent.FAILED,
-                    TestLogEvent.PASSED,
-                    TestLogEvent.SKIPPED
-                )
-                exceptionFormat = TestExceptionFormat.FULL
-                showExceptions = true
-                showCauses = true
-                showStackTraces = true
-            }
-
-            reports {
-                html.required.set(true)
-                html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests/unit")))
-            }
-
-            configure<JacocoTaskExtension> {
-                isEnabled = true
-                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
             }
         }
 
         register<Test>("integrationtests") {
             group = "tests"
+
             useJUnitPlatform {
                 includeTags("integration")
-            }
-
-            testLogging {
-                // set options for log level LIFECYCLE
-                events = setOf(
-                    TestLogEvent.FAILED,
-                    TestLogEvent.PASSED,
-                    TestLogEvent.SKIPPED
-                )
-                exceptionFormat = TestExceptionFormat.FULL
-                showExceptions = true
-                showCauses = true
-                showStackTraces = true
-            }
-
-            reports {
-                html.required.set(true)
-                html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests/integration")))
-            }
-
-            configure<JacocoTaskExtension> {
-                isEnabled = true
-                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
             }
         }
 
         register<Test>("e2e") {
             group = "tests"
+
             useJUnitPlatform {
                 includeTags("e2e")
-            }
-
-            testLogging {
-                // set options for log level LIFECYCLE
-                events = setOf(
-                    TestLogEvent.FAILED,
-                    TestLogEvent.PASSED,
-                    TestLogEvent.SKIPPED
-                )
-                exceptionFormat = TestExceptionFormat.FULL
-                showExceptions = true
-                showCauses = true
-                showStackTraces = true
-            }
-
-            reports {
-                html.required.set(true)
-                html.outputLocation.set(file(project.rootDir.resolve("$buildDir/reports/tests/e2e")))
-            }
-
-            configure<JacocoTaskExtension> {
-                isEnabled = true
-                classDumpDir = layout.buildDirectory.dir("jacoco/classpathdumps").get().asFile
             }
         }
 
         withType<JacocoReport> {
+            group = "tests"
+
             reports {
                 xml.required.set(true)
+                xml.outputLocation.set(
+                    file(project.rootDir.resolve("$buildDir/reports/coverage/coverage-${project.name}.xml"))
+                )
                 html.required.set(true)
                 csv.required.set(false)
                 html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
@@ -192,11 +151,10 @@ subprojects {
                     file(project.rootDir.resolve("$buildDir/reports/coverage"))
                 )
             }
-            dependsOn("test")
         }
 
         withType<JacocoCoverageVerification> {
-            group = "test"
+            group = "tests"
             description = "Test Coverage Verification"
             enabled = true
             violationRules {
@@ -219,19 +177,12 @@ subprojects {
                 }
             }
         }
+    }
+}
 
-        withType<Detekt> {
-            group = "linting"
-            description = "linting task"
-            exclude("**/resources/**", "**/build/**")
-            autoCorrect = true
-            config.setFrom(files("$rootDir/conf/linting/detekt/detekt.yml"))
-            reports {
-                html {
-                    required.set(true)
-                }
-            }
-        }
+subprojects {
+    repositories {
+        mavenCentral()
     }
 
     dependencies {

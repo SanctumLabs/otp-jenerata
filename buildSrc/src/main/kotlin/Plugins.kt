@@ -12,7 +12,7 @@ object Plugins {
     const val Java = "java"
 
     object Jacoco {
-        const val version = "0.8.5"
+        const val version = "0.8.8"
         const val plugin = "jacoco"
         const val core = "org.jacoco:org.jacoco.core:$version"
     }

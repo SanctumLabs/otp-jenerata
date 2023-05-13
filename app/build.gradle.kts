@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version Versions.KotlinVersion
+    kotlin("jvm")
     id(Plugins.KotlinSerialization) version Versions.KotlinVersion
     id(Plugins.Ktor.plugin) version Plugins.Ktor.version
 }

@@ -4,9 +4,7 @@ import com.sanctumlabs.otp.api.dto.OtpRequestDto
 import com.sanctumlabs.otp.api.dto.OtpResponseDto
 import com.sanctumlabs.otp.api.dto.OtpVerifyDto
 import com.sanctumlabs.otp.api.dto.OtpVerifyResponseDto
-import com.sanctumlabs.otp.core.entities.OtpCode
 import com.sanctumlabs.otp.core.entities.OtpVerificationStatus
-import com.sanctumlabs.otp.core.entities.UserId
 import com.sanctumlabs.otp.datastore.models.OtpEntity
 import com.sanctumlabs.otp.datastore.models.OtpTable
 import com.sanctumlabs.otp.di.apiModule
@@ -31,19 +29,22 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.testApplication
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterEach
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import kotlin.test.assertNotNull
-import kotlin.time.Duration.Companion.days
 
 @Tag("e2e")
 class OtpRestApiE2eTest : BaseIntegrationTest(), KoinTest {
+
+    @AfterEach
+    override fun teardown() {
+        super.teardown()
+        stopKoin()
+    }
 
     @Test
     fun `should be able to create an OTP record for a user ID`() = testApplication {
@@ -131,32 +132,29 @@ class OtpRestApiE2eTest : BaseIntegrationTest(), KoinTest {
             }
         }
 
-        val currentTime = Clock.System.now()
         val user = generateRandomString(10)
-        val randomOtpCode = generateRandomString(6)
-        val randomUserId = UserId(user)
-        val futureExpiryTime = currentTime.plus(1.days).toLocalDateTime(TimeZone.currentSystemDefault())
-        val notUsed = false
-        val otpCode =
-            OtpCode(code = randomOtpCode, userId = randomUserId, expiryTime = futureExpiryTime, used = notUsed)
 
-        // create an OTP record in the database
-        val savedOtpRecord = transaction {
-            OtpEntity.new {
-                code = otpCode.code
-                userId = otpCode.userId.value
-                expiryTime = otpCode.expiryTime.toJavaLocalDateTime()
-                used = otpCode.used
+        val otpRequest = OtpRequestDto(user)
+
+        testHttpClient
+            .post("/api/v1/otp") {
+                contentType(ContentType.Application.Json)
+                setBody(otpRequest)
             }
-        }
+            .apply {
+                assertEquals(HttpStatusCode.Created, status)
+                val actual = body<OtpResponseDto>()
+                assertEquals(user, actual.userId)
+                assertNotNull(actual.code)
+                assertNotNull(actual.expiryTime)
+            }
 
-        assertNotNull(savedOtpRecord)
-        assertEquals(savedOtpRecord.code, randomOtpCode)
-        assertEquals(savedOtpRecord.used, notUsed)
-        assertEquals(savedOtpRecord.userId, randomUserId.value)
-        assertEquals(savedOtpRecord.expiryTime, futureExpiryTime.toJavaLocalDateTime())
+        val savedOtpEntity = transaction { OtpEntity.find { OtpTable.userId eq user }.firstOrNull() }
 
-        val request = OtpVerifyDto(userId = user, code = randomOtpCode)
+        assertNotNull(savedOtpEntity)
+
+        val actualCode = savedOtpEntity.code
+        val request = OtpVerifyDto(userId = user, code = actualCode)
 
         testHttpClient
             .post("/api/v1/otp/verify") {
@@ -165,19 +163,17 @@ class OtpRestApiE2eTest : BaseIntegrationTest(), KoinTest {
             }
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
-                val actual = body<OtpVerifyResponseDto>()
-                assertEquals(user, actual.userId)
-                assertEquals(randomOtpCode, actual.code)
-                assertEquals(OtpVerificationStatus.VERIFIED, actual.status)
+
+                val actualResponse = body<OtpVerifyResponseDto>()
+
+                assertEquals(user, actualResponse.userId)
+                assertEquals(actualCode, actualResponse.code)
+                assertEquals(OtpVerificationStatus.VERIFIED, actualResponse.status)
             }
 
-        // check that we actually updated the OTP record
-        val updatedOtpRecord = transaction { OtpEntity.find { OtpTable.code eq randomOtpCode }.firstOrNull() }
+        val updatedOtpEntity = transaction { OtpEntity.find { OtpTable.userId eq user }.firstOrNull() }
 
-        assertNotNull(updatedOtpRecord)
-        assertEquals(updatedOtpRecord.code, randomOtpCode)
-        assertEquals(updatedOtpRecord.used, true)
-        assertEquals(updatedOtpRecord.userId, randomUserId.value)
-        assertEquals(updatedOtpRecord.expiryTime, futureExpiryTime.toJavaLocalDateTime())
+        assertNotNull(updatedOtpEntity)
+        assertEquals(true, updatedOtpEntity.used)
     }
 }

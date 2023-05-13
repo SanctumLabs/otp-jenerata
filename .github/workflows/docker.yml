@@ -6,6 +6,8 @@ on:
   workflow_run:
     workflows:
       - "Test"
+      - "Lint"
+      - "Build"
     branches:
       - 'main'
     types:

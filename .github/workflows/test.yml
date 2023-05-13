@@ -40,6 +40,12 @@ jobs:
       - name: Run Unit tests
         run: ./gradlew unittests
 
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./app/api/build/reports/coverage/coverage-api.xml,./app/core/build/reports/coverage/coverage-core.xml,./app/datastore/build/reports/coverage/coverage-datastore.xml,./app/domain/build/reports/coverage/coverage-domain.xml
+          flags: unittests
+
   integration-test:
     name: Integration Tests
     runs-on: ubuntu-latest
@@ -104,6 +110,12 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: "Set up environment"
+        run: docker compose up -d
+
+      - name: "Wait for docker to finish building"
+        run: sleep 30
 
       - name: Run End To End tests
         run: ./gradlew e2e
